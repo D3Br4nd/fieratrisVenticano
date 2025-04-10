@@ -1,0 +1,213 @@
+/* Reset base (opzionale ma consigliato) */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif; /* Scegli un font appropriato */
+    background-color: #f0f0f0; /* Colore base */
+    color: #333;
+    display: flex; /* Utile per centrare il gioco */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent; /* Rimuove highlight blu su tap mobile */
+}
+
+#game-area {
+    /* Contenitore principale */
+    display: flex;
+    flex-direction: column; /* Titolo sopra, poi gioco+UI, poi controlli */
+    align-items: center;
+    padding: 10px;
+}
+
+#game-area h1 {
+    margin-bottom: 15px;
+    color: #444;
+}
+
+#main-content {
+    display: flex; /* Canvas e pannello UI affiancati */
+    align-items: flex-start; /* Allinea in alto */
+    gap: 15px; /* Spazio tra canvas e UI panel */
+}
+
+#tetris-canvas {
+    border: 2px solid #555;
+    display: block; /* Rimuove spazio extra sotto il canvas */
+    /* Lo sfondo verrà impostato dinamicamente da ui.js */
+    background-color: #fafafa; /* Sfondo di default */
+}
+
+#ui-panel {
+    width: 150px; /* Larghezza fissa per il pannello UI */
+    background-color: #d8d8d8;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Spazio tra elementi nel pannello */
+}
+
+#ui-panel h3 {
+    margin: 0;
+    font-size: 1em;
+    color: #555;
+    border-bottom: 1px solid #bbb;
+    padding-bottom: 5px;
+}
+
+#score, #level {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #000;
+    text-align: right;
+}
+
+#next-piece-canvas {
+    border: 1px solid #bbb;
+    background-color: #fff;
+    display: block; /* Rimuove spazio extra */
+    margin: 0 auto; /* Centra se necessario */
+}
+
+#logo {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 10px;
+}
+
+#ui-panel > div { /* Contenitore per bottoni pausa/audio */
+    display: flex;
+    justify-content: space-around; /* O 'space-between' */
+    margin-top: auto; /* Spinge in basso se c'è spazio */
+}
+
+#pause-button, #sound-button {
+    padding: 8px 10px;
+    font-size: 0.8em;
+    border: none;
+    border-radius: 5px;
+    background-color: #bbb;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+#pause-button:hover, #sound-button:hover {
+     background-color: #aaa;
+}
+
+#controls {
+    margin-top: 20px;
+    display: grid; /* Ottimo per layout a griglia dei bottoni */
+    grid-template-columns: repeat(4, 1fr); /* 4 colonne uguali */
+    gap: 10px;
+    width: 100%; /* Occupa la larghezza disponibile sotto il gioco */
+    max-width: 320px; /* Limita la larghezza massima dei controlli */
+    user-select: none; /* Impedisce la selezione del testo sui bottoni */
+    -webkit-user-select: none; /* Per Safari */
+}
+
+#controls button {
+    padding: 15px 0; /* Padding verticale maggiore */
+    font-size: 1.8em; /* Icone più grandi */
+    border: none;
+    border-radius: 8px;
+    background-color: #a0a0a0;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.1s;
+    touch-action: manipulation; /* Migliora reattività touch */
+}
+
+#controls button:active {
+    background-color: #808080; /* Feedback visivo al tocco/click */
+}
+
+/* Stile per schermo Game Over */
+#game-over-screen {
+    display: none; /* Nascosto di default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Sfondo scuro semi-trasparente */
+    color: white;
+    z-index: 100; /* Sopra tutto il resto */
+
+    /* Flexbox per centrare il contenuto */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+#game-over-screen h2 {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+}
+
+#game-over-screen p {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+#game-over-screen label {
+     margin-bottom: 5px;
+}
+
+#game-over-screen input[type="text"] {
+    padding: 10px;
+    font-size: 1em;
+    margin-bottom: 15px;
+    width: 80%;
+    max-width: 250px;
+    border: none;
+    border-radius: 4px;
+}
+
+#game-over-screen button {
+    padding: 12px 25px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.2s;
+}
+#game-over-screen button:hover {
+    background-color: #d8d8d8;
+}
+
+#submit-score-button {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+}
+#submit-score-button:hover {
+    background-color: #45a049;
+}
+
+
+/* Classifica */
+#leaderboard { margin: 20px auto; max-width: 600px; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+#leaderboard h1 { text-align: center; margin-bottom: 20px; color: #333; }
+#leaderboard table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+#leaderboard th, #leaderboard td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+#leaderboard th { background-color: #e9e9e9; font-weight: bold; color: #555;}
+#leaderboard td:nth-child(1) { width: 50px; text-align: center; color: #888;} /* Pos. */
+#leaderboard td:nth-child(3) { text-align: right; font-weight: bold; color: #000;} /* Punteggio */
+#leaderboard tr:nth-child(odd) td { background-color: #f9f9f9; } /* Righe alternate */
+#leaderboard tr:hover td { background-color: #f1f1f1; } /* Hover */
+.loading { text-align: center; padding: 30px; color: #777; font-style: italic; }
+.error { text-align: center; padding: 30px; color: #D8000C; background-color: #FFD2D2; border: 1px solid #D8000C; border-radius: 5px;}
+.back-link { display: inline-block; text-align: center; margin-top: 25px; padding: 10px 20px; background-color: #555; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.2s;}
+.back-link:hover { background-color: #333; }

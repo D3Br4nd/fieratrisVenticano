@@ -1,0 +1,25 @@
+{
+    "name": "tetris-venticano",
+    "version": "1.0.0",
+    "description": "Tetris game themed for Fiera Campionaria di Venticano",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "tetris",
+        "venticano",
+        "fiera",
+        "game",
+        "html5"
+    ],
+    "author": "DeBrand",
+    "license": "MIT",
+    "dependencies": {
+        "csv-parse": "^5.5.3",
+        "proper-lockfile": "^4.1.2",
+        "express": "^4.18.2",
+        "cors": "^2.8.5"
+    }
+}
