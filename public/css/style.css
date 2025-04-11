@@ -17,10 +17,12 @@ body {
     margin: 0;
 }
 
-/* Stili specifici per la pagina classifica */
-body.classifica-page {
+/* Pagina classifica */
+.classifica-page {
     display: block;
     padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 #game-area {
@@ -94,17 +96,24 @@ body.classifica-page {
     margin-top: auto; /* Spinge in basso se c'è spazio */
 }
 
+/* Bottoni UI */
 #pause-button, #sound-button {
     padding: 8px 10px;
     font-size: 0.8em;
+    background-color: #bbb;
+}
+
+/* Bottoni comuni */
+#pause-button, #sound-button, #game-over-screen button {
     border: none;
     border-radius: 5px;
-    background-color: #bbb;
     cursor: pointer;
     transition: background-color 0.2s;
 }
-#pause-button:hover, #sound-button:hover {
-     background-color: #aaa;
+
+/* Hover per bottoni */
+#pause-button:hover, #sound-button:hover, #game-over-screen button:hover {
+    filter: brightness(0.9);
 }
 
 #controls {

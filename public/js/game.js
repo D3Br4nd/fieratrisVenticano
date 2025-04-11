@@ -109,30 +109,27 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
     }
 
     function getRandomPiece() {
-        // TODO: Logica per far apparire il pezzo LOGO meno frequentemente?
         const type = PIECES[Math.floor(Math.random() * PIECES.length)];
         const pieceData = TETROMINOES[type];
 
         // Clona la forma per non modificare l'originale
         const shape = pieceData.shape.map(row => [...row]);
 
-        // TODO: Decidi se e come inserire i blocchi speciali FCV
-        // Potrebbe essere casuale su uno dei blocchi '1' della forma
-        // Aggiungi una proprietà alla forma o al pezzo per indicare quali blocchi sono FCV
+        // Inserimento dei blocchi speciali FCV con 15% di probabilità
         let hasFCV = false;
-        if (Math.random() < 0.15) { // 15% di probabilità di avere un blocco FCV
+        if (Math.random() < 0.15) {
             // Trova coordinate [y][x] casuali di un blocco '1' per inserire un blocco FCV
             let attempts = 0;
-            while (attempts < 10) {
+        while (attempts < 10) {
             let ry = Math.floor(Math.random() * shape.length);
             let rx = Math.floor(Math.random() * shape[0].length);
             if (shape[ry][rx] === 1) {
-            shape[ry][rx] = 2; // Usa '2' per indicare blocco FCV (blocco speciale)
-            hasFCV = true;
-            break;
+                shape[ry][rx] = 2; // Usa '2' per indicare blocco FCV (blocco speciale)
+                hasFCV = true;
+                break;
             }
             attempts++;
-            }
+        }
         }
 
         return {
@@ -169,14 +166,14 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         // Ruota la matrice 90 gradi orario
         const rows = shape.length;
         const cols = shape[0].length;
-        const newShape = Array.from({ length: cols }, () => Array(rows).fill(0));
+        const newShape = Array(cols).fill().map(() => Array(rows).fill(0));
+        
         for (let y = 0; y < rows; y++) {
             for (let x = 0; x < cols; x++) {
-                if (shape[y][x] > 0) { // Copia solo i blocchi pieni (1 o 2)
-                     newShape[x][rows - 1 - y] = shape[y][x];
-                }
+                newShape[x][rows - 1 - y] = shape[y][x];
             }
         }
+        
         return newShape;
     }
 
@@ -364,7 +361,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         const initialTheme = LEVEL_THEMES[0];
         ui.updateTheme(initialTheme);
 
-        // TODO: Avvia musica di sottofondo (in loop)
+        // Avvia musica di sottofondo (in loop)
         if (gameAudio.music && !gameAudio.isMuted) {
              gameAudio.music.loop = true;
              gameAudio.music.play();
@@ -401,7 +398,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
                     pieceY++;
                     // Resetta timer caduta? Opzionale
                     lastTime = performance.now(); // Fa cadere subito al prossimo step
-                    // TODO: Punti per soft drop?
+                    // Potresti aggiungere punti bonus per soft drop qui
                     moved = true;
                      // playAudio(gameAudio.move); // Forse non serve suono per soft drop
                 } else {
@@ -509,25 +506,21 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
     // --- Inizializzazione Audio (Esempio base) ---
     // Inizializzazione Audio con handling di asset mancanti
     function loadAudio() {
-    // Crea oggetti audio silenziosi che implementano l'API minima
-    const silentAudio = { 
-    play: () => {}, 
-    pause: () => {}, 
-    stop: () => {}, 
-    mute: () => {} 
-    };
-
-    // Musica di sfondo e effetti sonori
-    gameAudio.music = { ...silentAudio, loop: true };
-    gameAudio.move = silentAudio;
-    gameAudio.rotate = silentAudio;
-    gameAudio.land = silentAudio;
-    gameAudio.line = silentAudio;
-    gameAudio.tetris = silentAudio;
-    gameAudio.gameover = silentAudio;
-    gameAudio.level = silentAudio;
+        // Crea un oggetto audio silenzioso con un'API minima
+        const createSilentAudio = () => ({ 
+            play: () => {}, 
+            pause: () => {}, 
+            stop: () => {}, 
+            muted: false
+        });
     
-    // Implementare il sistema audio completo quando i file saranno disponibili
+        // Crea tutti gli oggetti audio
+        ['music', 'move', 'rotate', 'land', 'line', 'tetris', 'gameover', 'level'].forEach(type => {
+            gameAudio[type] = createSilentAudio();
+        });
+        
+        // Imposta la proprietà loop solo per la musica
+        if (gameAudio.music) gameAudio.music.loop = true;
     }
     
     // Nota: La funzione playAudio è già definita sopra
@@ -547,4 +540,3 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
     };
 };
 
-// WALL_KICKS è stato spostato all'inizio del file

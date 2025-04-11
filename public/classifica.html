@@ -8,11 +8,11 @@
     <!-- Tutti gli stili spostati in style.css -->
 </head>
 <body class="classifica-page">
-    <div id="leaderboard">
+    <div id="leaderboard" role="region" aria-label="Classifica dei punteggi">
         <h1>Classifica FieraTris Venticano</h1>
         <div id="loading-indicator" class="loading">Caricamento classifica...</div>
         <div id="error-message" class="error" style="display: none;">Impossibile caricare la classifica.</div>
-        <table>
+        <table aria-label="Tabella dei punteggi">
             <thead>
                 <tr>
                     <th>Pos.</th>
@@ -25,7 +25,7 @@
             </tbody>
         </table>
         <!-- Link per tornare al gioco -->
-        <a href="index.html" class="back-link">Torna al gioco</a>
+        <a href="index.html" class="back-link" aria-label="Torna alla pagina del gioco">Torna al gioco</a>
     </div>
 
     <script src="js/api.js"></script>

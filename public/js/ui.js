@@ -27,18 +27,10 @@ const setupUI = (elements) => {
     
     // Inizializza gli eventi di input per il campo nome
     if (playerNameInput) {
-        // Previene completamente la propagazione degli eventi tastiera dall'input
-        playerNameInput.addEventListener('keydown', function(e) {
-            e.stopPropagation();
-        }, true);
-        
-        playerNameInput.addEventListener('keyup', function(e) {
-            e.stopPropagation();
-        }, true);
-        
-        playerNameInput.addEventListener('keypress', function(e) {
-            e.stopPropagation();
-        }, true);
+        // Previene la propagazione degli eventi tastiera dall'input
+        ['keydown', 'keyup', 'keypress'].forEach(eventType => {
+            playerNameInput.addEventListener(eventType, e => e.stopPropagation(), true);
+        });
     }
     
     // Funzione per controllare se l'input è attivo
@@ -48,33 +40,6 @@ const setupUI = (elements) => {
     
     // Rendi la funzione accessibile globalmente
     window.isInputActive = isInputActive;
-    
-    // Osservatore per monitorare quando il game over diventa visibile o nascosto
-    if (gameOverScreen) {
-        isGameOverVisible = gameOverScreen.style.display === 'flex';
-        const observer = new MutationObserver(mutations => {
-            mutations.forEach(mutation => {
-                if (mutation.attributeName === 'style') {
-                    const isVisible = gameOverScreen.style.display === 'flex';
-                    
-                    if (isVisible !== isGameOverVisible) {
-                        isGameOverVisible = isVisible;
-                        
-                        if (isVisible) {
-                            // Quando il popup è visibile, pulisci l'input e metti il focus
-                            setTimeout(() => {
-                                playerNameInput.value = '';
-                                playerNameInput.focus();
-                            }, 100);
-                        }
-                    }
-                }
-            });
-        });
-        
-        // Avvia l'osservazione delle modifiche allo stile del game over screen
-        observer.observe(gameOverScreen, { attributes: true });
-    }
 
 
     // --- Funzioni di Disegno ---
@@ -213,67 +178,55 @@ const setupUI = (elements) => {
     function updateLevel(level) {
         levelElement.textContent = level;
         
-        // Cambia sfondo in base al livello
+        // Temi per i livelli con colori associati
         const themes = [
-            'enogastronomia',     // Livello 1
-            'bioedilizia',        // Livello 2
-            'arredamenti',        // Livello 3
-            'energie_rinnovabili', // Livello 4
-            'vivaistica',         // Livello 5
-            'agricoltura',        // Livello 6
-            'tecnologia',         // Livello 7
-            'artigianato',        // Livello 8
-            'turismo',            // Livello 9
-            'finale_fiera'        // Livello 10
+            { name: 'enogastronomia', color: '#8BC34A' },      // Verde chiaro
+            { name: 'bioedilizia', color: '#795548' },         // Marrone
+            { name: 'arredamenti', color: '#FF9800' },         // Arancione
+            { name: 'energie_rinnovabili', color: '#03A9F4' }, // Azzurro
+            { name: 'vivaistica', color: '#4CAF50' },          // Verde
+            { name: 'agricoltura', color: '#689F38' },         // Verde oliva
+            { name: 'tecnologia', color: '#2196F3' },          // Blu
+            { name: 'artigianato', color: '#E65100' },         // Arancione scuro
+            { name: 'turismo', color: '#9C27B0' },            // Viola
+            { name: 'finale_fiera', color: '#FFC107' }         // Giallo dorato
         ];
-        // Usa direttamente il livello come indice (sottraendo 1 perché gli array partono da 0)
+        
+        // Limita il livello all'array di temi disponibili
         const themeIndex = Math.min(level - 1, themes.length - 1);
         const theme = themes[themeIndex];
         
-        // Funzione per generare uno sfondo colorato alternativo
-        const generateBackgroundFallback = (themeName) => {
-            // Mappa dei colori per i temi
-            const themeColors = {
-                'enogastronomia': '#8BC34A',      // Verde chiaro
-                'bioedilizia': '#795548',        // Marrone
-                'arredamenti': '#FF9800',        // Arancione
-                'energie_rinnovabili': '#03A9F4',// Azzurro
-                'vivaistica': '#4CAF50',         // Verde
-                'agricoltura': '#689F38',        // Verde oliva
-                'tecnologia': '#2196F3',         // Blu
-                'artigianato': '#E65100',        // Arancione scuro
-                'turismo': '#9C27B0',           // Viola
-                'finale_fiera': '#FFC107'        // Giallo dorato
-            };
-            
-            // Fallback color se il tema non è nella mappa
-            return themeColors[themeName] || '#333333';
-        };
-        
-        // Usa il colore di fallback dato che le immagini non sono ancora disponibili
+        // Aggiorna il colore di sfondo
         canvas.style.backgroundImage = 'none';
-        canvas.style.backgroundColor = generateBackgroundFallback(theme);
+        canvas.style.backgroundColor = theme.color;
+        
+        // Aggiorna il testo del tema
+        if (themeElement) {
+            themeElement.textContent = theme.name.replace('_', ' ')
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
     }
 
     // --- Gestione UI Interattiva ---
 
     function showGameOver(score) {
         finalScoreElement.textContent = score;
-        gameOverScreen.style.display = 'flex'; // Mostra schermo
+        gameOverScreen.style.display = 'flex';
+        isGameOverVisible = true;
         
-        // Fix per l'input quando si apre la schermata di Game Over
+        // Focus sull'input con piccolo delay
         setTimeout(() => {
-            // Pulisci il valore dell'input
             playerNameInput.value = '';
-            
-            // Applica focus all'input del nome
             playerNameInput.focus();
         }, 100);
     }
 
     function hideGameOver() {
         gameOverScreen.style.display = 'none';
-        playerNameInput.value = ''; // Pulisci input
+        isGameOverVisible = false;
+        playerNameInput.value = '';
     }
 
     function setupInputListeners(callback) {

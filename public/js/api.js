@@ -1,11 +1,28 @@
 const api = (() => { // Modulo IIFE per api
+    // Funzione di utilità per gestire errori di rete con timeout
+    async function fetchWithTimeout(url, options, timeout = 10000) {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+        
+        try {
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+            clearTimeout(id);
+            return response;
+        } catch (error) {
+            clearTimeout(id);
+            throw error;
+        }
+    }
 
     const API_BASE_URL = ''; // Non serve se chiamiamo dallo stesso dominio/porta
 
     async function submitScore(name, score) {
         try {
             console.log(`Invio punteggio: ${name} - ${score}`);
-            const response = await fetch('/api/score', {
+            const response = await fetchWithTimeout('/api/score', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -34,7 +51,7 @@ const api = (() => { // Modulo IIFE per api
 
     async function getScores() {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/scores`);
+            const response = await fetchWithTimeout(`${API_BASE_URL}/api/scores`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

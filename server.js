@@ -16,7 +16,7 @@ const SCORES_LOCK_PATH = path.join(__dirname, 'data', 'scores.csv.lock'); // Pat
     try {
         await fs.mkdir(path.dirname(SCORES_FILE_PATH), { recursive: true });
         
-        // Force create file with header if doesn't exist
+        // Verifica se il file esiste, altrimenti crealo
         try {
             await fs.access(SCORES_FILE_PATH);
             console.log('scores.csv exists');
@@ -25,7 +25,7 @@ const SCORES_LOCK_PATH = path.join(__dirname, 'data', 'scores.csv.lock'); // Pat
             await fs.writeFile(SCORES_FILE_PATH, 'NomeGiocatore,Punteggio,Timestamp\n');
         }
         
-        // Verify file is writable
+        // Verifica che il file sia scrivibile
         await fs.access(SCORES_FILE_PATH, fs.constants.W_OK);
         console.log('scores.csv is writable');
     } catch (error) {
@@ -106,27 +106,25 @@ app.post('/api/score', async (req, res) => {
 // API Endpoint: Recupera Classifica
 app.get('/api/scores', async (req, res) => {
     try {
-        let data;
+        // Assicurarsi che il file esista
         try {
-            data = await fs.readFile(SCORES_FILE_PATH, 'utf8');
-        } catch (error) {
-            if (error.code === 'ENOENT') {
-                // File doesn't exist, create it
-                await fs.writeFile(SCORES_FILE_PATH, 'NomeGiocatore,Punteggio,Timestamp\n');
-                data = '';
-            } else {
-                throw error;
-            }
+            await fs.access(SCORES_FILE_PATH);
+        } catch {
+            // File non esiste, crealo con intestazione
+            await fs.writeFile(SCORES_FILE_PATH, 'NomeGiocatore,Punteggio,Timestamp\n');
+            return res.json([]); // Restituisci array vuoto
         }
 
-        // Usa il modulo csv-parse invece di fare lo split manuale
+        // Leggi il file
+        const data = await fs.readFile(SCORES_FILE_PATH, 'utf8');
+        
+        // Parsa i dati CSV usando csv-parse/sync con opzioni robuste
         try {
-            // Parsa i dati CSV usando csv-parse/sync
             const records = parse(data, {
                 columns: ['name', 'score', 'timestamp'],
                 skip_empty_lines: true,
                 skip_records_with_error: true,
-                from_line: 2 // Salta la riga di intestazione
+                from_line: 2 // Salta l'intestazione
             });
             
             // Processa i record
@@ -136,31 +134,19 @@ app.get('/api/scores', async (req, res) => {
                     score: parseInt(record.score, 10),
                     date: record.timestamp ? new Date(record.timestamp) : new Date()
                 }))
-                .filter(record => !isNaN(record.score)) // Filtra record con score non validi
-                .sort((a, b) => b.score - a.score) // Ordine decrescente per punteggio
-                .slice(0, 100); // Limita a 100 risultati
-            
-            console.log(`Inviando ${scores.length} punteggi ordinati.`);
-            res.json(scores.length ? scores : []);
-        } catch (parseError) {
-            console.error('Error parsing CSV:', parseError);
-            // Fallback alla versione manuale se il parsing fallisce
-            const manualScores = data.split('\n')
-                .filter(line => line.trim() && !line.startsWith('NomeGiocatore'))
-                .map(line => {
-                    const [name, score, date] = line.split(',');
-                    return {
-                        name: name.replace(/"/g, ''),
-                        score: parseInt(score, 10),
-                        date: date ? new Date(date) : new Date()
-                    };
-                })
                 .filter(record => !isNaN(record.score))
                 .sort((a, b) => b.score - a.score)
                 .slice(0, 100);
-                
-            console.log(`[FALLBACK] Inviando ${manualScores.length} punteggi ordinati.`);
-            res.json(manualScores.length ? manualScores : []);
+            
+            console.log(`Inviando ${scores.length} punteggi ordinati.`);
+            res.json(scores);
+        } catch (parseError) {
+            console.error('Error parsing CSV:', parseError);
+            // Se il parsing fallisce, restituisci un errore chiaro
+            res.status(500).json({ 
+                error: 'Failed to parse CSV data',
+                details: parseError.message 
+            });
         }
     } catch (error) {
         console.error('Error reading scores:', error);
