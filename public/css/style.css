@@ -234,80 +234,104 @@ body {
 /* Media queries per dispositivi mobili */
 @media screen and (max-width: 768px) {
     body {
-        align-items: flex-start;
-        padding-top: 10px;
+        padding: 0;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
     }
     
     #game-area {
-        transform: scale(0.85);
-        transform-origin: top center;
-    }
-    
-    #main-content {
+        width: 100%;
+        padding: 5px;
+        margin: 0;
+        display: flex;
         flex-direction: column;
         align-items: center;
     }
     
-    #ui-panel {
-        width: 300px;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        margin-top: 10px;
-    }
-    
-    #ui-panel > div {
-        width: 45%;
-    }
-    
-    #controls {
-        margin-top: 10px;
-    }
-    
-    /* Assicura che i pulsanti di controllo siano visibili */
-    #controls button {
-        padding: 12px 0;
-    }
-}
-
-/* Media query per dispositivi molto piccoli */
-@media screen and (max-width: 480px) {
-    #game-area {
-        transform: scale(0.75);
-    }
-    
-    #tetris-canvas {
-        width: 240px;
-        height: 480px;
-    }
-    
-    #ui-panel {
-        width: 240px;
-        padding: 10px;
-    }
-    
-    #next-piece-canvas {
-        width: 100px;
-        height: 100px;
-    }
-}
-
-/* Aggiunta per gestire l'orientamento orizzontale su mobile */
-@media screen and (max-height: 600px) {
-    body {
-        align-items: flex-start;
-    }
-    
-    #game-area {
-        transform: scale(0.7);
-        transform-origin: top center;
+    #game-area h1 {
+        font-size: 1.5rem;
+        margin: 5px 0;
     }
     
     #main-content {
+        display: flex;
         flex-direction: row;
+        width: 100%;
+        justify-content: center;
+        gap: 5px;
+    }
+    
+    #tetris-canvas {
+        width: 200px;
+        height: 400px;
     }
     
     #ui-panel {
         width: 120px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        font-size: 0.9rem;
+        gap: 5px;
+    }
+    
+    #ui-panel h3 {
+        margin: 2px 0;
+        font-size: 0.9rem;
+    }
+    
+    #next-piece-canvas {
+        width: 80px;
+        height: 80px;
+    }
+    
+    #logo {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    #controls {
+        width: 100%;
+        max-width: 320px;
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+    }
+    
+    #controls button {
+        padding: 10px 0;
+        font-size: 1.5rem;
+    }
+    
+    #ui-panel > div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    #ui-panel button {
+        padding: 5px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Media query per dispositivi molto piccoli */
+@media screen and (max-width: 360px) {
+    #tetris-canvas {
+        width: 180px;
+        height: 360px;
+    }
+    
+    #ui-panel {
+        width: 100px;
+    }
+    
+    #next-piece-canvas {
+        width: 70px;
+        height: 70px;
     }
 }
