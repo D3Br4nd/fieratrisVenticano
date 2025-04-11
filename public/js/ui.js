@@ -202,10 +202,10 @@ const setupUI = (elements) => {
             themeElement.textContent = theme.name;
         }
         
-        // Aggiorna anche il banner con informazioni sul tema corrente
+        // Aggiorna il banner con il formato richiesto
         const bannerText = document.querySelector('.banner-text');
         if (bannerText) {
-            bannerText.textContent = `${theme.name} - Fiera Venticano 2025`;
+            bannerText.textContent = `Liv.: ${theme.name} - 46a Fiera Venticano 2025`;
         }
     }
 

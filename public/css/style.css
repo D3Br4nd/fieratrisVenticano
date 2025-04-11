@@ -43,6 +43,7 @@ h1 {
 #tetris-canvas {
     border: 2px solid #333;
     background-color: #f8f8f8;
+    height: 600px; /* Tornato alla dimensione originale */
 }
 
 #ui-panel {
@@ -58,9 +59,9 @@ h1 {
 
 #logo {
     width: 100%;
-    max-width: 120px;
+    max-width: 90px; /* Logo ancora più piccolo */
     height: auto;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 #next-piece-canvas {
@@ -69,24 +70,36 @@ h1 {
     margin: 5px 0;
 }
 
-#ui-panel button {
-    margin-top: 5px;
-    padding: 8px;
+/* Stile per i pulsanti di gioco (Pausa e Audio) */
+#game-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 320px;
+    margin: 10px 0 5px 0;
+}
+
+#game-buttons button {
+    padding: 8px 15px;
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-weight: bold;
+    flex: 1;
+    margin: 0 5px;
 }
 
-#ui-panel button:hover {
+#game-buttons button:hover {
     background-color: #45a049;
 }
 
 /* Banner della Fiera */
 #fiera-banner {
     width: 100%;
-    margin: 10px 0;
+    max-width: 320px;
+    margin: 0 0 10px 0;
     text-align: center;
     padding: 8px;
     background-color: #f8f8f8;
@@ -107,62 +120,38 @@ h1 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
-    margin-top: 10px;
+    margin: 0 0 10px 0;
     width: 100%;
+    max-width: 320px;
 }
 
-#controls button {
-    height: 45px;
-    font-size: 24px;
-    background-color: #e0e0e0;
-    border: none;
+/* Banner promozionale sotto i controlli */
+#promo-banner {
+    width: 100%;
+    max-width: 320px;
+    height: 160px; /* Altezza aumentata per riempire completamente lo spazio */
+    margin: 0 0 0 0; /* Rimosso il margine inferiore */
+    background-color: #f0f0f0;
     border-radius: 8px;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-    transition: all 0.1s;
-}
-
-#controls button:active {
-    transform: translateY(2px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-/* Game Over Screen */
-#game-over-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: none;
-    flex-direction: column;
+    overflow: hidden;
+    display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
-    color: white;
+    border: 1px solid #ddd;
+}
+
+.promo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Placeholder per il banner promozionale */
+#promo-banner:empty::before {
+    content: "Banner Promozionale Fiera";
+    color: #999;
+    font-style: italic;
     text-align: center;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-#game-over-screen h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-}
-
-#game-over-screen button {
-    margin-top: 15px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-#game-over-screen button:hover {
-    background-color: #45a049;
 }
 
 /* Media queries per dispositivi mobili */
@@ -200,36 +189,22 @@ h1 {
     
     #tetris-canvas {
         width: 200px;
-        height: 400px;
+        height: 420px;
     }
     
-    #ui-panel {
-        width: 120px;
-        padding: 5px;
-        display: flex;
-        flex-direction: column;
+    #game-buttons {
+        max-width: 280px;
+        margin: 8px 0 4px 0;
+    }
+    
+    #game-buttons button {
+        padding: 6px 10px;
         font-size: 0.9rem;
-        gap: 5px;
-    }
-    
-    #ui-panel h3 {
-        margin: 2px 0;
-        font-size: 0.9rem;
-    }
-    
-    #next-piece-canvas {
-        width: 80px;
-        height: 80px;
-    }
-    
-    #logo {
-        max-width: 100%;
-        height: auto;
     }
     
     #fiera-banner {
-        max-width: 320px;
-        margin: 5px 0;
+        max-width: 280px;
+        margin: 0 0 8px 0;
         padding: 5px;
     }
     
@@ -238,15 +213,14 @@ h1 {
     }
     
     #controls {
-        width: 100%;
-        max-width: 320px;
-        margin-top: 5px;
-        gap: 5px;
+        max-width: 280px;
+        margin: 0 0 8px 0;
     }
     
-    #controls button {
-        height: 40px;
-        font-size: 20px;
+    #promo-banner {
+        max-width: 280px;
+        height: 120px; /* Altezza aumentata anche su mobile */
+        margin: 0 0 0 0;
     }
 }
 
@@ -270,4 +244,60 @@ h1 {
         height: 35px;
         font-size: 18px;
     }
+}
+
+/* Game Over Screen - Sistemato */
+#game-over-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#game-over-screen h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: white;
+}
+
+#game-over-screen p {
+    margin: 10px 0;
+    font-size: 1.2rem;
+    color: white;
+}
+
+#player-name-input {
+    padding: 10px;
+    font-size: 1rem;
+    width: 80%;
+    max-width: 300px;
+    margin: 15px 0;
+    border: none;
+    border-radius: 4px;
+}
+
+#game-over-screen button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#game-over-screen button:hover {
+    background-color: #45a049;
 }
