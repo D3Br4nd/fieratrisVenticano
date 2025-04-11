@@ -125,6 +125,26 @@ h1 {
     max-width: 320px;
 }
 
+#controls button {
+    height: 60px; /* Pulsanti più grandi */
+    width: 100%; /* Assicura che i pulsanti occupino tutto lo spazio disponibile */
+    font-size: 24px;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.1s;
+    aspect-ratio: 1; /* Rende i pulsanti quadrati */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#controls button:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
 /* Banner promozionale sotto i controlli */
 #promo-banner {
     width: 100%;
@@ -217,6 +237,11 @@ h1 {
         margin: 0 0 8px 0;
     }
     
+    #controls button {
+        height: 50px; /* Pulsanti leggermente più piccoli su mobile */
+        font-size: 20px;
+    }
+    
     #promo-banner {
         max-width: 280px;
         height: 120px; /* Altezza aumentata anche su mobile */
@@ -241,7 +266,7 @@ h1 {
     }
     
     #controls button {
-        height: 35px;
+        height: 45px; /* Pulsanti ancora più piccoli su dispositivi molto piccoli */
         font-size: 18px;
     }
 }
