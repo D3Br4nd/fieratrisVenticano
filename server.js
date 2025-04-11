@@ -10,27 +10,27 @@ const PORT = process.env.PORT || 3000;
 const SCORES_FILE_PATH = path.join(__dirname, 'data', 'scores.csv');
 const SCORES_LOCK_PATH = path.join(__dirname, 'data', 'scores.csv.lock'); // Path per il file di lock
 
-// Assicura che la directory data esista
-// Update the initialization block
+// Assicura che la directory data e il file punteggi esistano
 (async () => {
     try {
+        // Crea la directory data se non esiste
         await fs.mkdir(path.dirname(SCORES_FILE_PATH), { recursive: true });
         
         // Verifica se il file esiste, altrimenti crealo
         try {
             await fs.access(SCORES_FILE_PATH);
-            console.log('scores.csv exists');
+            console.log(`File punteggi esistente: ${SCORES_FILE_PATH}`);
         } catch {
-            console.log('Creating scores.csv with header');
+            console.log(`Creazione nuovo file punteggi: ${SCORES_FILE_PATH}`);
             await fs.writeFile(SCORES_FILE_PATH, 'NomeGiocatore,Punteggio,Timestamp\n');
         }
         
         // Verifica che il file sia scrivibile
         await fs.access(SCORES_FILE_PATH, fs.constants.W_OK);
-        console.log('scores.csv is writable');
     } catch (error) {
-        console.error('File system error:', error);
-        process.exit(1); // Exit if we can't work with the file
+        console.error('Errore critico file system:', error);
+        console.error('Impossibile accedere al file dei punteggi. Verificare permessi directory.');
+        process.exit(1); // Termina il server se non possiamo lavorare col file
     }
 })();
 
@@ -57,7 +57,6 @@ app.post('/api/score', async (req, res) => {
 
     let release;
     try {
-        console.log(`Attempting to lock ${SCORES_LOCK_PATH}`);
         release = await lockfile.lock(SCORES_FILE_PATH, {
              lockfilePath: SCORES_LOCK_PATH,
              retries: {
@@ -69,14 +68,11 @@ app.post('/api/score', async (req, res) => {
             },
              stale: 15000 // Tempo in ms dopo cui un lock è considerato vecchio
         });
-        console.log('File locked successfully.');
 
         await fs.appendFile(SCORES_FILE_PATH, csvLine);
-        console.log(`Score saved: ${name.trim()}, ${score}`);
 
         // Rilascia il lock PRIMA di inviare la risposta
         await release();
-        console.log('File unlocked.');
         release = null; // Azzera per sicurezza
 
         res.status(201).json({ 
@@ -90,7 +86,7 @@ app.post('/api/score', async (req, res) => {
         if (release) {
             try {
                 await release();
-                console.log('File unlocked after error.');
+                // Lock rilasciato dopo errore
             } catch (unlockError) {
                 console.error('Error releasing lock after error:', unlockError);
             }
@@ -106,17 +102,18 @@ app.post('/api/score', async (req, res) => {
 // API Endpoint: Recupera Classifica
 app.get('/api/scores', async (req, res) => {
     try {
-        // Assicurarsi che il file esista
-        try {
-            await fs.access(SCORES_FILE_PATH);
-        } catch {
-            // File non esiste, crealo con intestazione
-            await fs.writeFile(SCORES_FILE_PATH, 'NomeGiocatore,Punteggio,Timestamp\n');
-            return res.json([]); // Restituisci array vuoto
-        }
+        // Il file dovrebbe già esistere grazie all'inizializzazione all'avvio
+        // Se per qualche motivo non fosse disponibile, gestiamo l'errore
 
         // Leggi il file
-        const data = await fs.readFile(SCORES_FILE_PATH, 'utf8');
+        let data;
+        try {
+            data = await fs.readFile(SCORES_FILE_PATH, 'utf8');
+        } catch (readError) {
+            console.error('Error reading scores file:', readError);
+            // Se il file non esiste o non è leggibile, restituisci array vuoto
+            return res.json([]);
+        }
         
         // Parsa i dati CSV usando csv-parse/sync con opzioni robuste
         try {
@@ -138,7 +135,7 @@ app.get('/api/scores', async (req, res) => {
                 .sort((a, b) => b.score - a.score)
                 .slice(0, 100);
             
-            console.log(`Inviando ${scores.length} punteggi ordinati.`);
+            // Scores pronti per l'invio
             res.json(scores);
         } catch (parseError) {
             console.error('Error parsing CSV:', parseError);
@@ -171,9 +168,6 @@ app.get('*', (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Serving static files from: ${path.join(__dirname, 'public')}`);
-    console.log(`Scores will be saved to: ${SCORES_FILE_PATH}`);
-    console.log(`Lock file path: ${SCORES_LOCK_PATH}`);
+    console.log(`Server FieraTris Venticano avviato su http://localhost:${PORT}`);
 });
 

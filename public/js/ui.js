@@ -37,9 +37,6 @@ const setupUI = (elements) => {
     function isInputActive() {
         return isGameOverVisible && document.activeElement === playerNameInput;
     }
-    
-    // Rendi la funzione accessibile globalmente
-    window.isInputActive = isInputActive;
 
 
     // --- Funzioni di Disegno ---
@@ -355,23 +352,7 @@ const setupUI = (elements) => {
         soundButton.textContent = soundOn ? 'Audio Off' : 'Audio On';
     }
 
-    // Gestione logo (placeholder fino a quando le immagini non saranno disponibili)
-    if (logoImg) {
-        // Crea un rettangolo colorato come placeholder
-        const canvas = document.createElement('canvas');
-        canvas.width = 120;
-        canvas.height = 60;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#006400';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // Aggiungi testo al placeholder
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 14px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('Fiera Venticano', canvas.width/2, canvas.height/2);
-        logoImg.src = canvas.toDataURL();
-    }
+    // Il logo è già caricato dall'HTML attraverso l'attributo src
 
     // Esponi le funzioni e le proprietà necessarie all'esterno
     return {

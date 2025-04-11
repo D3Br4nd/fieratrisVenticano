@@ -4,7 +4,6 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
     // --- Costanti del Gioco ---
     const COLS = 10;
     const ROWS = 20;
-    const BLOCK_SIZE = 30; // Deve corrispondere al canvas / UI
 
     // Forme dei Tetramini (matrici e colori)
     const TETROMINOES = {
@@ -15,7 +14,6 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         'S': { shape: [[0, 1, 1], [1, 1, 0]], color: 'lime' }, // Verde chiaro
         'T': { shape: [[0, 1, 0], [1, 1, 1]], color: 'purple' },
         'Z': { shape: [[1, 1, 0], [0, 1, 1]], color: 'red' }
-        // Il pezzo LOGO è stato rimosso per semplificare e rendere più coerente il gioco
     };
     const PIECES = Object.keys(TETROMINOES);
 
@@ -44,19 +42,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         35000  // Livello 10
     ];
     
-    // Temi per ogni livello
-    const LEVEL_THEMES = [
-        'Enogastronomia',    // Livello 1
-        'Bioedilizia',       // Livello 2
-        'Arredamenti',       // Livello 3
-        'Energie rinnovabili',// Livello 4
-        'Vivaistica',        // Livello 5
-        'Agricoltura',       // Livello 6
-        'Tecnologia',        // Livello 7
-        'Artigianato',       // Livello 8
-        'Turismo',           // Livello 9
-        'Finale Fiera'       // Livello 10
-    ];
+    // Nota: I temi per i livelli sono gestiti direttamente in UI
     
     // Sistema per i wall kicks (rotazione vicino ai muri)
     const WALL_KICKS = {
@@ -81,7 +67,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
     let pieceX, pieceY; // Posizione del pezzo attuale (angolo top-left)
     let score;
     let level;
-    let linesCleared;
+    let totalLinesCleared; // Rinominato per chiarezza
     let gameSpeed;
     let isGameOver;
     let isPaused;
@@ -229,7 +215,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         if (linesClearedCount > 0) {
             const basePoints = SCORE_POINTS[linesClearedCount] || 0;
             score += (basePoints * level) + bonusFromFCV;
-            linesCleared += linesClearedCount;
+            totalLinesCleared += linesClearedCount;
             
             // Controlla se devi aumentare di livello in base al punteggio
             const previousLevel = level;
@@ -245,9 +231,8 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
                 gameSpeed = Math.max(INITIAL_SPEED - (level - 1) * SPEED_DECREASE, 100); // Minimo 100ms
                 playAudio(gameAudio.level); // Riproduci suono livello aumentato
                 
-                // Mostra il tema del livello corrente
-                const currentTheme = LEVEL_THEMES[level - 1] || LEVEL_THEMES[0];
-                ui.updateTheme(currentTheme);
+                // Aggiorna il tema del livello corrente tramite UI
+                ui.updateTheme(getCurrentThemeNameByLevel(level));
             }
             
             // Riproduci suono appropriato per le linee completate
@@ -343,7 +328,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         grid = initializeGrid();
         score = 0;
         level = 1;
-        linesCleared = 0;
+        totalLinesCleared = 0;
         gameSpeed = INITIAL_SPEED;
         isGameOver = false;
         isPaused = false;
@@ -357,9 +342,8 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         ui.hideGameOver(); // Assicurati che la schermata sia nascosta
         ui.updatePauseButton(isPaused);
         
-        // Imposta il tema del livello iniziale
-        const initialTheme = LEVEL_THEMES[0];
-        ui.updateTheme(initialTheme);
+        // Aggiorna il tema iniziale
+        ui.updateTheme('Enogastronomia');
 
         // Avvia musica di sottofondo (in loop)
         if (gameAudio.music && !gameAudio.isMuted) {
@@ -468,66 +452,52 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
     }
 
      function toggleSound() {
-     gameAudio.isMuted = !gameAudio.isMuted;
-     ui.updateSoundButton(!gameAudio.isMuted);
-     // Muta/smuta tutti gli effetti sonori e la musica
-     try {
-     if (typeof Howler !== 'undefined') {
-         Howler.mute(gameAudio.isMuted);
-     } else if (gameAudio.music) {
-         gameAudio.music.muted = gameAudio.isMuted;
-             if (!gameAudio.isMuted && !isPaused && !isGameOver) {
-                 gameAudio.music.play();
-                }
-            }
-        } catch (e) {
-            console.warn('Error toggling sound:', e);
-        }
+        // Semplicemente aggiorna l'UI per ora
+        gameAudio.isMuted = !gameAudio.isMuted;
+        ui.updateSoundButton(!gameAudio.isMuted);
+        // In futuro gestirà l'audio quando saranno disponibili gli asset
      }
 
     function playAudio(sound) {
-    // Versione semplificata dato che stiamo usando oggetti audio silenziosi
-    if (!sound || gameAudio.isMuted) return;
-    
-    try {
-    if (typeof sound.play === 'function') {
-    sound.play();
-    }
-    } catch (e) {
-    console.warn("Error playing sound:", e);
-    }
-    }
+    // Funzione segnaposto fino all'arrivo degli asset audio
+    // Quando gli asset saranno disponibili, questa implementerà la riproduzione
+    return;
+}
 
      function getCurrentScore() {
          return score;
      }
 
 
-    // --- Inizializzazione Audio (Esempio base) ---
-    // Inizializzazione Audio con handling di asset mancanti
+    // Inizializzazione Audio semplificata fino all'arrivo degli asset
     function loadAudio() {
-        // Crea un oggetto audio silenzioso con un'API minima
-        const createSilentAudio = () => ({ 
-            play: () => {}, 
-            pause: () => {}, 
-            stop: () => {}, 
-            muted: false
-        });
-    
-        // Crea tutti gli oggetti audio
-        ['music', 'move', 'rotate', 'land', 'line', 'tetris', 'gameover', 'level'].forEach(type => {
-            gameAudio[type] = createSilentAudio();
-        });
-        
-        // Imposta la proprietà loop solo per la musica
-        if (gameAudio.music) gameAudio.music.loop = true;
+        // Per ora gameAudio è già inizializzato con valori null
+        // Il codice è pronto per quando gli asset audio saranno disponibili
+        // Non sovrascrivere gameAudio, è già stato dichiarato
     }
     
-    // Nota: La funzione playAudio è già definita sopra
+    // Helper per ottenere il nome del tema in base al livello
+    function getCurrentThemeNameByLevel(level) {
+        // Temi per i livelli - estratto da updateLevel in ui.js
+        const themes = [
+            'Enogastronomia',
+            'Bioedilizia',
+            'Arredamenti',
+            'Energie Rinnovabili',
+            'Vivaistica',
+            'Agricoltura',
+            'Tecnologia',
+            'Artigianato',
+            'Turismo',
+            'Finale Fiera'
+        ];
+        
+        // Limita il livello all'array di temi disponibili
+        const themeIndex = Math.min(level - 1, themes.length - 1);
+        return themes[themeIndex];
+    }
     
-    // Nota: La funzione toggleSound è già definita sopra
-
-    loadAudio(); // Carica audio all'inizio
+    loadAudio(); // Preparazione per futuri asset audio
 
 
     // Esponi le funzioni pubbliche del modulo Game

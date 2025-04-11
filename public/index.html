@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>FieraTris Venticano 2025</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Tutti gli stili spostati in style.css -->
 </head>
 <body>
     <div id="game-area">
         <h1>FieraTris Venticano</h1>
         <div id="main-content">
-            <canvas id="tetris-canvas" width="300" height="600"></canvas> <!-- Esempio: 10x20 grid * 30px block size -->
+            <canvas id="tetris-canvas" width="300" height="600"></canvas>
             <div id="ui-panel">
                 <img id="logo" src="assets/img/logo-fiera.png" alt="Logo Fiera Venticano">
                 <h3>Punteggio</h3>
@@ -21,7 +20,7 @@
                 <h3>Tema</h3>
                 <div id="theme">Enogastronomia</div>
                 <h3>Prossimo</h3>
-                <canvas id="next-piece-canvas" width="120" height="120"></canvas> <!-- 4x4 * 30px -->
+                <canvas id="next-piece-canvas" width="120" height="120"></canvas>
                  <div>
                     <button id="pause-button">Pausa</button>
                     <button id="sound-button">Audio On</button> <!-- Cambierà testo -->
@@ -33,7 +32,6 @@
             <button id="btn-rotate">↻</button>
             <button id="btn-down">▼</button>
             <button id="btn-right">ᐅ</button>
-            <!-- Potrebbe servire un bottone per il drop istantaneo (hard drop) -->
         </div>
     </div>
 
@@ -90,9 +88,8 @@
                 const score = game.getCurrentScore(); // Prendi il punteggio dal gioco
                 if (name && score > 0) {
                     try {
-                        console.log(`Invio punteggio: ${name} con ${score} punti`);
+                        // Invio punteggio al server
                         const result = await api.submitScore(name, score);
-                        console.log('Punteggio inviato con successo:', result);
                         
                         // Il reindirizzamento viene gestito da ui.js
                         // Non facciamo nulla qui, evitando reindirizzamenti duplicati
@@ -110,7 +107,6 @@
             // Avvio del gioco con un piccolo ritardo per assicurarsi che tutto sia inizializzato
             setTimeout(() => {
                 game.start(); // Avvia il gioco 
-                console.log("Gioco avviato con ritardo per garantire inizializzazione completa");
             }, 100);
         });
     </script>

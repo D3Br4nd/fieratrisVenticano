@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classifica - FieraTris Venticano</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Tutti gli stili spostati in style.css -->
 </head>
 <body class="classifica-page">
     <div id="leaderboard" role="region" aria-label="Classifica dei punteggi">
@@ -36,10 +35,8 @@
             const errorMessage = document.getElementById('error-message');
 
             try {
-                // Ottieni i punteggi
-                console.log('Richiesta punteggi al server...');
+                // Ottieni i punteggi dal server
                 const scores = await api.getScores();
-                console.log('Punteggi ricevuti:', scores);
 
                 loadingIndicator.style.display = 'none'; // Nascondi caricamento
 

@@ -17,11 +17,9 @@ const api = (() => { // Modulo IIFE per api
         }
     }
 
-    const API_BASE_URL = ''; // Non serve se chiamiamo dallo stesso dominio/porta
-
     async function submitScore(name, score) {
         try {
-            console.log(`Invio punteggio: ${name} - ${score}`);
+            // Esegue la richiesta al server
             const response = await fetchWithTimeout('/api/score', {
                 method: 'POST',
                 headers: {
@@ -40,8 +38,6 @@ const api = (() => { // Modulo IIFE per api
                 console.error('Errore invio punteggio:', result.message);
                 throw new Error(result.message || 'Errore del server');
             }
-            
-            console.log('Punteggio inviato con successo:', result);
             return result;
         } catch (error) {
             console.error('API Error:', error);
@@ -51,13 +47,11 @@ const api = (() => { // Modulo IIFE per api
 
     async function getScores() {
         try {
-            const response = await fetchWithTimeout(`${API_BASE_URL}/api/scores`);
+            const response = await fetchWithTimeout('/api/scores');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const scores = await response.json();
-            console.log('Scores retrieved successfully');
-            return scores;
+            return await response.json();
         } catch (error) {
             console.error('Error getting scores:', error);
             // Rilancia l'errore per gestirlo nella pagina della classifica
