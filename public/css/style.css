@@ -229,3 +229,85 @@ body {
 .error { text-align: center; padding: 30px; color: #D8000C; background-color: #FFD2D2; border: 1px solid #D8000C; border-radius: 5px;}
 .back-link { display: inline-block; text-align: center; margin-top: 25px; padding: 10px 20px; background-color: #555; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.2s;}
 .back-link:hover { background-color: #333; }
+
+
+/* Media queries per dispositivi mobili */
+@media screen and (max-width: 768px) {
+    body {
+        align-items: flex-start;
+        padding-top: 10px;
+    }
+    
+    #game-area {
+        transform: scale(0.85);
+        transform-origin: top center;
+    }
+    
+    #main-content {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    #ui-panel {
+        width: 300px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        margin-top: 10px;
+    }
+    
+    #ui-panel > div {
+        width: 45%;
+    }
+    
+    #controls {
+        margin-top: 10px;
+    }
+    
+    /* Assicura che i pulsanti di controllo siano visibili */
+    #controls button {
+        padding: 12px 0;
+    }
+}
+
+/* Media query per dispositivi molto piccoli */
+@media screen and (max-width: 480px) {
+    #game-area {
+        transform: scale(0.75);
+    }
+    
+    #tetris-canvas {
+        width: 240px;
+        height: 480px;
+    }
+    
+    #ui-panel {
+        width: 240px;
+        padding: 10px;
+    }
+    
+    #next-piece-canvas {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+/* Aggiunta per gestire l'orientamento orizzontale su mobile */
+@media screen and (max-height: 600px) {
+    body {
+        align-items: flex-start;
+    }
+    
+    #game-area {
+        transform: scale(0.7);
+        transform-origin: top center;
+    }
+    
+    #main-content {
+        flex-direction: row;
+    }
+    
+    #ui-panel {
+        width: 120px;
+    }
+}
