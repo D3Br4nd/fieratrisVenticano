@@ -1,6 +1,9 @@
 # File di sistema
 .DS_Store
 **/.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
 # File di backup
 *.bak

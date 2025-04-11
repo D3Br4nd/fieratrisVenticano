@@ -1,18 +1,16 @@
 
 services:
   app:
-    image: your-image-name
-    networks:
-      - debrand-network
+    image: fieratris-venticano
+    container_name: fieratris-app
+    ports:
+      - "3000:3000"
     volumes:
-      - /home/rocky/fieratrisVenticano/volume:/app/data  # Volume to link CSV files
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
+      - ./data:/usr/src/app/data  # Volume per i file CSV dei punteggi
+    restart: unless-stopped
+    networks:
+      - fieratris-network
 
 networks:
-  debrand-network:
-    external: true
+  fieratris-network:
+    driver: bridge
