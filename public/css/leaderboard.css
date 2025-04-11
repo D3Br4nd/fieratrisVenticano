@@ -1,0 +1,156 @@
+/* Stili per la classifica */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    background-image: linear-gradient(135deg, #8BC34A 0%, #4CAF50 100%);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Stili specifici per la classifica che si sovrappongono a style.css */
+body {
+    background-image: linear-gradient(135deg, #8BC34A 0%, #4CAF50 100%);
+    padding: 20px;
+}
+
+.leaderboard-container {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 600px;
+    padding: 25px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.logo {
+    max-width: 200px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+    font-size: 2.2rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+}
+
+td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f0f8f0;
+}
+
+/* Stili per le posizioni top */
+tr.gold {
+    background-color: rgba(255, 215, 0, 0.2);
+}
+
+tr.silver {
+    background-color: rgba(192, 192, 192, 0.2);
+}
+
+tr.bronze {
+    background-color: rgba(205, 127, 50, 0.2);
+}
+
+tr.gold td:first-child::before {
+    content: "🏆";
+    margin-right: 5px;
+}
+
+tr.silver td:first-child::before {
+    content: "🥈";
+    margin-right: 5px;
+}
+
+tr.bronze td:first-child::before {
+    content: "🥉";
+    margin-right: 5px;
+}
+
+.back-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #388E3C;
+}
+
+#loading-indicator {
+    margin: 20px 0;
+    font-size: 1.2rem;
+    color: #4CAF50;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+#error-message {
+    display: none;
+    color: #f44336;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #ffebee;
+    border-radius: 5px;
+}
+
+/* Media queries per dispositivi mobili */
+@media screen and (max-width: 600px) {
+    .leaderboard-container {
+        padding: 15px;
+        border-radius: 10px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    th, td {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+}

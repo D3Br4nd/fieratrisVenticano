@@ -2,16 +2,23 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Classifica - FieraTris Venticano</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/leaderboard.css">
 </head>
-<body class="classifica-page">
-    <div id="leaderboard" role="region" aria-label="Classifica dei punteggi">
-        <h1>Classifica FieraTris Venticano</h1>
-        <div id="loading-indicator" class="loading">Caricamento classifica...</div>
-        <div id="error-message" class="error" style="display: none;">Impossibile caricare la classifica.</div>
-        <table aria-label="Tabella dei punteggi">
+<body>
+    <div class="leaderboard-container">
+        <img src="assets/img/logo-fiera.png" alt="Logo Fiera Venticano" class="logo">
+        <h1>Classifica FieraTris</h1>
+        
+        <div id="loading-indicator">Caricamento classifica in corso...</div>
+        
+        <div id="error-message">
+            Si è verificato un errore nel caricamento della classifica. Riprova più tardi.
+        </div>
+        
+        <table>
             <thead>
                 <tr>
                     <th>Pos.</th>
@@ -20,11 +27,11 @@
                 </tr>
             </thead>
             <tbody id="leaderboard-body">
-                <!-- Le righe verranno popolate via JS -->
+                <!-- I dati della classifica verranno inseriti qui dinamicamente -->
             </tbody>
         </table>
-        <!-- Link per tornare al gioco -->
-        <a href="index.html" class="back-link" aria-label="Torna alla pagina del gioco">Torna al gioco</a>
+        
+        <a href="index.html" class="back-button">Torna al Gioco</a>
     </div>
 
     <script src="js/api.js"></script>
@@ -37,6 +44,7 @@
             try {
                 // Ottieni i punteggi dal server
                 const scores = await api.getScores();
+                console.log('Punteggi ricevuti:', scores);
 
                 loadingIndicator.style.display = 'none'; // Nascondi caricamento
 
@@ -54,19 +62,18 @@
                         const nameCell = row.insertCell();
                         const scoreCell = row.insertCell();
 
+                        // Aggiungi classi per le posizioni top
+                        if (index === 0) {
+                            row.classList.add('gold');
+                        } else if (index === 1) {
+                            row.classList.add('silver');
+                        } else if (index === 2) {
+                            row.classList.add('bronze');
+                        }
+
                         posCell.textContent = index + 1;
                         nameCell.textContent = entry.name || 'Anonimo';
                         scoreCell.textContent = entry.score || 0;
-                        
-                        // Evidenzia i migliori punteggi
-                        if (index === 0) {
-                            row.style.backgroundColor = '#FFD700'; // Oro per il primo posto
-                            row.style.fontWeight = 'bold';
-                        } else if (index === 1) {
-                            row.style.backgroundColor = '#C0C0C0'; // Argento per il secondo posto
-                        } else if (index === 2) {
-                            row.style.backgroundColor = '#CD7F32'; // Bronzo per il terzo posto
-                        }
                     });
                 } else {
                     // Mostra messaggio se non ci sono punteggi
@@ -75,6 +82,7 @@
                     cell.colSpan = 3; // Occupa tutte le colonne
                     cell.textContent = 'Nessun punteggio registrato ancora!';
                     cell.style.textAlign = 'center';
+                    cell.style.padding = '20px';
                 }
 
             } catch (error) {

@@ -177,16 +177,16 @@ const setupUI = (elements) => {
         
         // Temi per i livelli con colori associati
         const themes = [
-            { name: 'enogastronomia', color: '#8BC34A' },      // Verde chiaro
-            { name: 'bioedilizia', color: '#795548' },         // Marrone
-            { name: 'arredamenti', color: '#FF9800' },         // Arancione
-            { name: 'energie_rinnovabili', color: '#03A9F4' }, // Azzurro
-            { name: 'vivaistica', color: '#4CAF50' },          // Verde
-            { name: 'agricoltura', color: '#689F38' },         // Verde oliva
-            { name: 'tecnologia', color: '#2196F3' },          // Blu
-            { name: 'artigianato', color: '#E65100' },         // Arancione scuro
-            { name: 'turismo', color: '#9C27B0' },            // Viola
-            { name: 'finale_fiera', color: '#FFC107' }         // Giallo dorato
+            { name: 'Enogastronomia', color: '#8BC34A' },      // Verde chiaro
+            { name: 'Bioedilizia', color: '#795548' },         // Marrone
+            { name: 'Arredamenti', color: '#FF9800' },         // Arancione
+            { name: 'Energie Rinnovabili', color: '#03A9F4' }, // Azzurro
+            { name: 'Vivaistica', color: '#4CAF50' },          // Verde
+            { name: 'Agricoltura', color: '#689F38' },         // Verde oliva
+            { name: 'Tecnologia', color: '#2196F3' },          // Blu
+            { name: 'Artigianato', color: '#E65100' },         // Arancione scuro
+            { name: 'Turismo', color: '#9C27B0' },            // Viola
+            { name: 'Finale Fiera', color: '#FFC107' }         // Giallo dorato
         ];
         
         // Limita il livello all'array di temi disponibili
@@ -199,10 +199,13 @@ const setupUI = (elements) => {
         
         // Aggiorna il testo del tema
         if (themeElement) {
-            themeElement.textContent = theme.name.replace('_', ' ')
-                .split('_')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
+            themeElement.textContent = theme.name;
+        }
+        
+        // Aggiorna anche il banner con informazioni sul tema corrente
+        const bannerText = document.querySelector('.banner-text');
+        if (bannerText) {
+            bannerText.textContent = `${theme.name} - Fiera Venticano 2025`;
         }
     }
 
@@ -228,7 +231,12 @@ const setupUI = (elements) => {
 
     function setupInputListeners(callback) {
         handleInputCallback = callback; // Salva la funzione di gestione input del gioco
-
+    
+        // Variabili per gestire la pressione continua del tasto giù
+        let downButtonPressed = false;
+        let downButtonInterval = null;
+        const initialDownDelay = 100; // ms prima di iniziare l'accelerazione continua
+    
         // Listener Tastiera
         document.addEventListener('keydown', (e) => {
             // Controlla se siamo nel campo di input nome
@@ -281,12 +289,83 @@ const setupUI = (elements) => {
                     break;
             }
         });
-
+    
         // Listener Bottoni Touch standard
         document.getElementById('btn-left')?.addEventListener('click', () => handleInputCallback && !isPaused && handleInputCallback('left'));
         document.getElementById('btn-right')?.addEventListener('click', () => handleInputCallback && !isPaused && handleInputCallback('right'));
-        document.getElementById('btn-down')?.addEventListener('click', () => handleInputCallback && !isPaused && handleInputCallback('down'));
         document.getElementById('btn-rotate')?.addEventListener('click', () => handleInputCallback && !isPaused && handleInputCallback('rotate'));
+        
+        // Gestione speciale per il pulsante giù con pressione continua
+        const downButton = document.getElementById('btn-down');
+        if (downButton) {
+            // Quando si inizia a premere il pulsante
+            downButton.addEventListener('mousedown', () => {
+                if (handleInputCallback && !isPaused) {
+                    // Prima chiamata immediata
+                    handleInputCallback('down');
+                    
+                    // Imposta un timer per chiamate ripetute
+                    downButtonPressed = true;
+                    downButtonInterval = setInterval(() => {
+                        if (downButtonPressed && handleInputCallback && !isPaused) {
+                            handleInputCallback('down');
+                        }
+                    }, initialDownDelay);
+                }
+            });
+            
+            // Per dispositivi touch
+            downButton.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Previene comportamenti indesiderati su mobile
+                if (handleInputCallback && !isPaused) {
+                    // Prima chiamata immediata
+                    handleInputCallback('down');
+                    
+                    // Imposta un timer per chiamate ripetute
+                    downButtonPressed = true;
+                    downButtonInterval = setInterval(() => {
+                        if (downButtonPressed && handleInputCallback && !isPaused) {
+                            handleInputCallback('down');
+                        }
+                    }, initialDownDelay);
+                }
+            });
+            
+            // Quando si rilascia il pulsante (mouse)
+            downButton.addEventListener('mouseup', () => {
+                downButtonPressed = false;
+                if (downButtonInterval) {
+                    clearInterval(downButtonInterval);
+                    downButtonInterval = null;
+                }
+            });
+            
+            // Quando si rilascia il pulsante (touch)
+            downButton.addEventListener('touchend', () => {
+                downButtonPressed = false;
+                if (downButtonInterval) {
+                    clearInterval(downButtonInterval);
+                    downButtonInterval = null;
+                }
+            });
+            
+            // Se il mouse/dito esce dal pulsante mentre è premuto
+            downButton.addEventListener('mouseleave', () => {
+                downButtonPressed = false;
+                if (downButtonInterval) {
+                    clearInterval(downButtonInterval);
+                    downButtonInterval = null;
+                }
+            });
+            
+            downButton.addEventListener('touchcancel', () => {
+                downButtonPressed = false;
+                if (downButtonInterval) {
+                    clearInterval(downButtonInterval);
+                    downButtonInterval = null;
+                }
+            });
+        }
         
         // Listener Bottoni UI
         playAgainButton.addEventListener('click', () => {

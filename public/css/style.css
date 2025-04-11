@@ -5,231 +5,165 @@
     padding: 0;
 }
 
+/* Stili base */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0; 
+    background-color: #f0f0f0;
     color: #333;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    -webkit-tap-highlight-color: transparent; /* Rimuove highlight blu su tap mobile */
-    margin: 0;
-}
-
-/* Pagina classifica */
-.classifica-page {
-    display: block;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+    -webkit-tap-highlight-color: transparent;
 }
 
 #game-area {
-    /* Contenitore principale */
-    display: flex;
-    flex-direction: column; /* Titolo sopra, poi gioco+UI, poi controlli */
-    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     padding: 10px;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
-#game-area h1 {
-    margin-bottom: 15px;
-    color: #444;
+h1 {
+    text-align: center;
+    margin: 0 0 10px 0;
+    font-size: 1.8rem;
 }
 
 #main-content {
-    display: flex; /* Canvas e pannello UI affiancati */
-    align-items: flex-start; /* Allinea in alto */
-    gap: 15px; /* Spazio tra canvas e UI panel */
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 #tetris-canvas {
-    border: 2px solid #555;
-    display: block; /* Rimuove spazio extra sotto il canvas */
-    background-color: #fafafa; /* Sfondo di default, verrà cambiato dinamicamente */
+    border: 2px solid #333;
+    background-color: #f8f8f8;
 }
 
 #ui-panel {
-    width: 150px; /* Larghezza fissa per il pannello UI */
-    background-color: #d8d8d8;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Spazio tra elementi nel pannello */
+    gap: 5px;
 }
 
 #ui-panel h3 {
-    margin: 0;
-    font-size: 1em;
-    color: #555;
-    border-bottom: 1px solid #bbb;
-    padding-bottom: 5px;
-}
-
-#score, #level {
-    font-size: 1.4em;
-    font-weight: bold;
-    color: #000;
-    text-align: right;
-}
-
-#next-piece-canvas {
-    border: 1px solid #bbb;
-    background-color: #fff;
-    display: block; /* Rimuove spazio extra */
-    margin: 0 auto; /* Centra se necessario */
+    margin: 5px 0 0 0;
+    font-size: 1rem;
 }
 
 #logo {
-    max-width: 100%;
+    width: 100%;
+    max-width: 120px;
     height: auto;
-    display: block;
     margin-bottom: 10px;
 }
 
-#ui-panel > div { /* Contenitore per bottoni pausa/audio */
-    display: flex;
-    justify-content: space-around; /* O 'space-between' */
-    margin-top: auto; /* Spinge in basso se c'è spazio */
+#next-piece-canvas {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    margin: 5px 0;
 }
 
-/* Bottoni UI */
-#pause-button, #sound-button {
-    padding: 8px 10px;
-    font-size: 0.8em;
-    background-color: #bbb;
-}
-
-/* Bottoni comuni */
-#pause-button, #sound-button, #game-over-screen button {
+#ui-panel button {
+    margin-top: 5px;
+    padding: 8px;
+    background-color: #4CAF50;
+    color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.2s;
 }
 
-/* Hover per bottoni */
-#pause-button:hover, #sound-button:hover, #game-over-screen button:hover {
-    filter: brightness(0.9);
+#ui-panel button:hover {
+    background-color: #45a049;
 }
 
+/* Banner della Fiera */
+#fiera-banner {
+    width: 100%;
+    margin: 10px 0;
+    text-align: center;
+    padding: 8px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 2px solid #4CAF50;
+    box-sizing: border-box;
+}
+
+.banner-text {
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Controlli */
 #controls {
-    margin-top: 20px;
-    display: grid; /* Ottimo per layout a griglia dei bottoni */
-    grid-template-columns: repeat(4, 1fr); /* 4 colonne uguali */
-    gap: 10px;
-    width: 100%; /* Occupa la larghezza disponibile sotto il gioco */
-    max-width: 320px; /* Limita la larghezza massima dei controlli */
-    user-select: none; /* Impedisce la selezione del testo sui bottoni */
-    -webkit-user-select: none; /* Per Safari */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+    width: 100%;
 }
 
 #controls button {
-    padding: 15px 0; /* Padding verticale maggiore */
-    font-size: 1.8em; /* Icone più grandi */
+    height: 45px;
+    font-size: 24px;
+    background-color: #e0e0e0;
     border: none;
     border-radius: 8px;
-    background-color: #a0a0a0;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.1s;
-    touch-action: manipulation; /* Migliora reattività touch */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.1s;
 }
 
 #controls button:active {
-    background-color: #808080; /* Feedback visivo al tocco/click */
+    transform: translateY(2px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* Stile per schermo Game Over */
+/* Game Over Screen */
 #game-over-screen {
-    display: none; /* Nascosto di default */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Sfondo scuro semi-trasparente */
-    color: white;
-    z-index: 100; /* Sopra tutto il resto */
-
-    /* Flexbox per centrare il contenuto */
-    display: flex;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
+    color: white;
     text-align: center;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 #game-over-screen h2 {
-    font-size: 2.5em;
-    margin-bottom: 15px;
-}
-
-#game-over-screen p {
-    font-size: 1.5em;
+    font-size: 2rem;
     margin-bottom: 20px;
 }
 
-#game-over-screen label {
-     margin-bottom: 5px;
-}
-
-#game-over-screen input[type="text"] {
-    padding: 10px;
-    font-size: 1em;
-    margin-bottom: 15px;
-    width: 80%;
-    max-width: 250px;
+#game-over-screen button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
     border: none;
     border-radius: 4px;
-}
-
-#game-over-screen button {
-    padding: 12px 25px;
-    font-size: 1em;
-    border: none;
-    border-radius: 5px;
     cursor: pointer;
-    margin: 5px;
-    background-color: #f0f0f0;
-    color: #333;
-    transition: background-color 0.2s;
-}
-#game-over-screen button:hover {
-    background-color: #d8d8d8;
+    font-size: 1rem;
 }
 
-#submit-score-button {
-    background-color: #4CAF50; /* Verde */
-    color: white;
-}
-#submit-score-button:hover {
+#game-over-screen button:hover {
     background-color: #45a049;
 }
-
-
-/* Classifica */
-/* Pagina classifica */
-#leaderboard { margin: 20px auto; max-width: 600px; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-#leaderboard h1 { text-align: center; margin-bottom: 20px; color: #333; }
-#leaderboard table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-#leaderboard th, #leaderboard td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
-#leaderboard th { background-color: #e9e9e9; font-weight: bold; color: #555;}
-#leaderboard td:nth-child(1) { width: 50px; text-align: center; color: #888;} /* Pos. */
-#leaderboard td:nth-child(3) { text-align: right; font-weight: bold; color: #000;} /* Punteggio */
-#leaderboard tr:nth-child(odd) td { background-color: #f9f9f9; } /* Righe alternate */
-#leaderboard tr:hover td { background-color: #f1f1f1; } /* Hover */
-
-/* Elementi comuni a più pagine */
-.loading { text-align: center; padding: 30px; color: #777; font-style: italic; }
-.error { text-align: center; padding: 30px; color: #D8000C; background-color: #FFD2D2; border: 1px solid #D8000C; border-radius: 5px;}
-.back-link { display: inline-block; text-align: center; margin-top: 25px; padding: 10px 20px; background-color: #555; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.2s;}
-.back-link:hover { background-color: #333; }
-
 
 /* Media queries per dispositivi mobili */
 @media screen and (max-width: 768px) {
@@ -293,29 +227,26 @@ body {
         height: auto;
     }
     
+    #fiera-banner {
+        max-width: 320px;
+        margin: 5px 0;
+        padding: 5px;
+    }
+    
+    .banner-text {
+        font-size: 12px;
+    }
+    
     #controls {
         width: 100%;
         max-width: 320px;
-        margin-top: 10px;
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        margin-top: 5px;
         gap: 5px;
     }
     
     #controls button {
-        padding: 10px 0;
-        font-size: 1.5rem;
-    }
-    
-    #ui-panel > div {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-    
-    #ui-panel button {
-        padding: 5px;
-        font-size: 0.8rem;
+        height: 40px;
+        font-size: 20px;
     }
 }
 
@@ -333,5 +264,10 @@ body {
     #next-piece-canvas {
         width: 70px;
         height: 70px;
+    }
+    
+    #controls button {
+        height: 35px;
+        font-size: 18px;
     }
 }
