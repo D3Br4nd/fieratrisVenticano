@@ -13,7 +13,7 @@ const api = (() => { // Modulo IIFE per api
             return response;
         } catch (error) {
             clearTimeout(id);
-            throw error;
+            throw error; // Non distingue tra errori di timeout e altri errori
         }
     }
 
