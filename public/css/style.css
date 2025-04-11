@@ -149,8 +149,8 @@ h1 {
 #promo-banner {
     width: 100%;
     max-width: 320px;
-    height: 160px; /* Altezza aumentata per riempire completamente lo spazio */
-    margin: 0 0 0 0; /* Rimosso il margine inferiore */
+    height: 400px; /* Aumentata per adattarsi all'immagine 320x400 */
+    margin: 0 0 0 0;
     background-color: #f0f0f0;
     border-radius: 8px;
     overflow: hidden;
@@ -244,7 +244,7 @@ h1 {
     
     #promo-banner {
         max-width: 280px;
-        height: 120px; /* Altezza aumentata anche su mobile */
+        height: 350px; /* Adattata per mobile mantenendo proporzioni simili */
         margin: 0 0 0 0;
     }
 }
