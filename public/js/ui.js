@@ -59,7 +59,6 @@ const setupUI = (elements) => {
                     
                     if (isVisible !== isGameOverVisible) {
                         isGameOverVisible = isVisible;
-                        console.log('Game over visibility changed:', isVisible);
                         
                         if (isVisible) {
                             // Quando il popup è visibile, pulisci l'input e metti il focus
@@ -96,8 +95,18 @@ const setupUI = (elements) => {
         piece.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
-                    const color = isShadow ? 'rgba(0,0,0,0.2)' : piece.color;
-                    drawBlock(context, offsetX + x, offsetY + y, color, blockSize);
+                    if (isShadow) {
+                        // Per l'ombra, usa una versione semitrasparente del colore originale
+                        context.fillStyle = 'rgba(0,0,0,0.2)';
+                        context.fillRect((offsetX + x) * blockSize, (offsetY + y) * blockSize, blockSize, blockSize);
+                        context.strokeStyle = 'rgba(0,0,0,0.1)';
+                        context.lineWidth = 1;
+                        context.strokeRect((offsetX + x) * blockSize, (offsetY + y) * blockSize, blockSize, blockSize);
+                    } else {
+                        // Per il pezzo normale, usa la funzione drawBlock esistente
+                        let color = value === 2 ? 'gold' : piece.color; // Gestisce blocchi speciali FCV
+                        drawBlock(context, offsetX + x, offsetY + y, color, blockSize);
+                    }
                 }
             });
         });
@@ -137,11 +146,12 @@ const setupUI = (elements) => {
         clearCanvas(ctx, canvas);
         drawGrid(ctx, gameState.grid, BLOCK_SIZE);
         
-        // Draw shadow first
-        if (gameState.currentPiece && gameState.shadowY !== undefined) {
+        // Disegna l'ombra prima se disponibile
+        if (gameState.currentPiece && gameState.shadowY !== undefined && gameState.shadowY > gameState.pieceY) {
             drawPiece(ctx, gameState.currentPiece, gameState.pieceX, gameState.shadowY, BLOCK_SIZE, true);
         }
         
+        // Disegna il pezzo corrente
         if (gameState.currentPiece) {
             drawPiece(ctx, gameState.currentPiece, gameState.pieceX, gameState.pieceY, BLOCK_SIZE);
         }
@@ -240,20 +250,9 @@ const setupUI = (elements) => {
             return themeColors[themeName] || '#333333';
         };
         
-        // Prova a caricare l'immagine di sfondo
-        const img = new Image();
-        img.onload = () => {
-            // Immagine caricata con successo, applica lo sfondo
-            canvas.style.backgroundImage = `url('assets/img/sfondi/${theme}.jpg')`;
-            canvas.style.backgroundSize = 'cover';
-        };
-        img.onerror = () => {
-            // Immagine non trovata, usa il colore di fallback
-            console.warn(`Background image for theme '${theme}' not found, using color fallback`);
-            canvas.style.backgroundImage = 'none';
-            canvas.style.backgroundColor = generateBackgroundFallback(theme);
-        };
-        img.src = `assets/img/sfondi/${theme}.jpg`;
+        // Usa il colore di fallback dato che le immagini non sono ancora disponibili
+        canvas.style.backgroundImage = 'none';
+        canvas.style.backgroundColor = generateBackgroundFallback(theme);
     }
 
     // --- Gestione UI Interattiva ---
@@ -403,19 +402,22 @@ const setupUI = (elements) => {
         soundButton.textContent = soundOn ? 'Audio Off' : 'Audio On';
     }
 
-    // Gestione logo
+    // Gestione logo (placeholder fino a quando le immagini non saranno disponibili)
     if (logoImg) {
-        logoImg.onerror = function() {
-            console.log('Logo image not found, using placeholder');
-            // Create a colored rectangle as placeholder
-            const canvas = document.createElement('canvas');
-            canvas.width = 120;
-            canvas.height = 60;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#006400';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            logoImg.src = canvas.toDataURL();
-        };
+        // Crea un rettangolo colorato come placeholder
+        const canvas = document.createElement('canvas');
+        canvas.width = 120;
+        canvas.height = 60;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#006400';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Aggiungi testo al placeholder
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Fiera Venticano', canvas.width/2, canvas.height/2);
+        logoImg.src = canvas.toDataURL();
     }
 
     // Esponi le funzioni e le proprietà necessarie all'esterno

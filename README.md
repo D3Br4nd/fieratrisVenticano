@@ -2,7 +2,7 @@
 
 Un gioco web stile Tetris creato per la Fiera di Venticano, con funzionalità multiplayer, classifica e temi personalizzati.
 
-![Tetris Logo](public/assets/img/logo-fiera.png)
+<!-- Logo non ancora disponibile -->
 
 ## Indice
 
@@ -152,7 +152,7 @@ FieraTetris/
 
 ### Asset richiesti
 
-Per il funzionamento completo del gioco sono necessari i seguenti asset:
+Per il funzionamento completo del gioco sono necessari i seguenti asset (ancora da implementare):
 
 #### Audio
 - `public/assets/audio/korobeiniki.mp3` - Musica principale
@@ -166,11 +166,14 @@ Per il funzionamento completo del gioco sono necessari i seguenti asset:
 
 #### Immagini
 - `public/assets/img/logo-fiera.png` - Logo della fiera
-- `public/assets/img/sfondi/agroalimentare.jpg` - Sfondo livello agroalimentare
+- `public/assets/img/sfondi/enogastronomia.jpg` - Sfondo livello enogastronomia
 - `public/assets/img/sfondi/bioedilizia.jpg` - Sfondo livello bioedilizia
-- `public/assets/img/sfondi/mobili.jpg` - Sfondo livello mobili
+- `public/assets/img/sfondi/arredamenti.jpg` - Sfondo livello arredamenti
 - `public/assets/img/sfondi/energie_rinnovabili.jpg` - Sfondo livello energie rinnovabili
 - `public/assets/img/sfondi/vivaistica.jpg` - Sfondo livello vivaistica
+- e altri sfondi secondo i temi definiti in `game.js`
+
+**Nota**: Il gioco attualmente utilizza colori di fallback quando gli asset non sono disponibili.
 
 ### Dipendenze
 

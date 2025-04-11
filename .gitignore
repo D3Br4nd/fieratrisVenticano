@@ -1,0 +1,22 @@
+# File di sistema
+.DS_Store
+**/.DS_Store
+
+# File di backup
+*.bak
+
+# Cartelle node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Log
+logs
+*.log
+
+# Ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

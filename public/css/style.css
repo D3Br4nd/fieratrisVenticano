@@ -1,4 +1,4 @@
-/* Reset base (opzionale ma consigliato) */
+/* Stili Base e Reset */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,14 +6,21 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif; /* Scegli un font appropriato */
-    background-color: #f0f0f0; /* Colore base */
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0; 
     color: #333;
-    display: flex; /* Utile per centrare il gioco */
+    display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     -webkit-tap-highlight-color: transparent; /* Rimuove highlight blu su tap mobile */
+    margin: 0;
+}
+
+/* Stili specifici per la pagina classifica */
+body.classifica-page {
+    display: block;
+    padding: 20px;
 }
 
 #game-area {
@@ -38,8 +45,7 @@ body {
 #tetris-canvas {
     border: 2px solid #555;
     display: block; /* Rimuove spazio extra sotto il canvas */
-    /* Lo sfondo verrà impostato dinamicamente da ui.js */
-    background-color: #fafafa; /* Sfondo di default */
+    background-color: #fafafa; /* Sfondo di default, verrà cambiato dinamicamente */
 }
 
 #ui-panel {
@@ -198,6 +204,7 @@ body {
 
 
 /* Classifica */
+/* Pagina classifica */
 #leaderboard { margin: 20px auto; max-width: 600px; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 #leaderboard h1 { text-align: center; margin-bottom: 20px; color: #333; }
 #leaderboard table { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -207,6 +214,8 @@ body {
 #leaderboard td:nth-child(3) { text-align: right; font-weight: bold; color: #000;} /* Punteggio */
 #leaderboard tr:nth-child(odd) td { background-color: #f9f9f9; } /* Righe alternate */
 #leaderboard tr:hover td { background-color: #f1f1f1; } /* Hover */
+
+/* Elementi comuni a più pagine */
 .loading { text-align: center; padding: 30px; color: #777; font-style: italic; }
 .error { text-align: center; padding: 30px; color: #D8000C; background-color: #FFD2D2; border: 1px solid #D8000C; border-radius: 5px;}
 .back-link { display: inline-block; text-align: center; margin-top: 25px; padding: 10px 20px; background-color: #555; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.2s;}

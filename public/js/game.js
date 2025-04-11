@@ -14,10 +14,8 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         'O': { shape: [[1, 1], [1, 1]], color: 'yellow' },
         'S': { shape: [[0, 1, 1], [1, 1, 0]], color: 'lime' }, // Verde chiaro
         'T': { shape: [[0, 1, 0], [1, 1, 1]], color: 'purple' },
-        'Z': { shape: [[1, 1, 0], [0, 1, 1]], color: 'red' },
-        // Aggiungi qui il pezzo speciale del logo?
-        // Potrebbe essere una L rovesciata
-        'LOGO': { shape: [[1, 1, 1], [1, 0, 0]], color: '#006400' } // Verde scuro Fiera
+        'Z': { shape: [[1, 1, 0], [0, 1, 1]], color: 'red' }
+        // Il pezzo LOGO è stato rimosso per semplificare e rendere più coerente il gioco
     };
     const PIECES = Object.keys(TETROMINOES);
 
@@ -100,8 +98,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         gameover: null,
         level: null,
         isMuted: false
-        // TODO: Caricare gli audio (magari con libreria tipo Howler.js o semplici <audio>)
-        // TODO: Metodi play/pause/mute
+        // Gli elementi audio saranno implementati quando saranno disponibili
     };
 
 
@@ -124,17 +121,17 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         // Aggiungi una proprietà alla forma o al pezzo per indicare quali blocchi sono FCV
         let hasFCV = false;
         if (Math.random() < 0.15) { // 15% di probabilità di avere un blocco FCV
-            // Trova coordinate [y][x] casuali di un blocco '1'
+            // Trova coordinate [y][x] casuali di un blocco '1' per inserire un blocco FCV
             let attempts = 0;
             while (attempts < 10) {
-                 let ry = Math.floor(Math.random() * shape.length);
-                 let rx = Math.floor(Math.random() * shape[0].length);
-                 if (shape[ry][rx] === 1) {
-                     shape[ry][rx] = 2; // Usa '2' per indicare blocco FCV
-                     hasFCV = true;
-                     break;
-                 }
-                 attempts++;
+            let ry = Math.floor(Math.random() * shape.length);
+            let rx = Math.floor(Math.random() * shape[0].length);
+            if (shape[ry][rx] === 1) {
+            shape[ry][rx] = 2; // Usa '2' per indicare blocco FCV (blocco speciale)
+            hasFCV = true;
+            break;
+            }
+            attempts++;
             }
         }
 
@@ -200,7 +197,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
                 }
             });
         });
-         // TODO: Suono atterraggio (land.mp3)
+         // Riproduce il suono di atterraggio
          playAudio(gameAudio.land);
     }
 
@@ -249,7 +246,6 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
             // Se il livello è cambiato, aggiorna la velocità e riproduci un suono
             if (level !== previousLevel) {
                 gameSpeed = Math.max(INITIAL_SPEED - (level - 1) * SPEED_DECREASE, 100); // Minimo 100ms
-                console.log(`Livello aumentato a ${level}, nuova velocità: ${gameSpeed}ms`);
                 playAudio(gameAudio.level); // Riproduci suono livello aumentato
                 
                 // Mostra il tema del livello corrente
@@ -286,7 +282,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
          // Controlla se il gioco è finito (nuovo pezzo collide subito)
          if (!isValidMove(pieceX, pieceY, currentPiece.shape)) {
              isGameOver = true;
-             // TODO: Suono game over
+             // Riproduci suono game over
              playAudio(gameAudio.gameover);
              if (gameAudio.music) gameAudio.music.pause(); // Ferma musica
              ui.showGameOver(score);
@@ -296,6 +292,17 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
 
 
     // --- Game Loop ---
+    // Calcola la posizione dell'ombra del pezzo corrente
+    function calculateShadow() {
+        if (!currentPiece) return pieceY;
+        
+        let shadowY = pieceY;
+        while (isValidMove(pieceX, shadowY + 1, currentPiece.shape)) {
+            shadowY++;
+        }
+        return shadowY;
+    }
+
     function gameLoop(currentTime) {
         if (isGameOver || isPaused) {
             return; // Esce se finito o in pausa
@@ -309,16 +316,13 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         }
         
         const deltaTime = currentTime - lastTime;
-        
-        // DEBUG - per verificare che il loop stia funzionando
-        // console.log('Game loop', deltaTime, gameSpeed);
 
         // Controlla se è ora di muovere il pezzo verso il basso
         if (deltaTime >= gameSpeed) {
             // Muovi giù
             if (isValidMove(pieceX, pieceY + 1, currentPiece.shape)) {
                 pieceY++;
-                ui.renderGame({ grid, currentPiece, pieceX, pieceY }); // Renderizza dopo il movimento
+                ui.renderGame({ grid, currentPiece, pieceX, pieceY, shadowY: calculateShadow() }); // Renderizza dopo il movimento
             } else {
                 // Il pezzo è atterrato
                 lockPiece();
@@ -331,7 +335,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         }
         
         // Renderizzazione continua (non solo quando cade il pezzo)
-        ui.renderGame({ grid, currentPiece, pieceX, pieceY });
+        ui.renderGame({ grid, currentPiece, pieceX, pieceY, shadowY: calculateShadow() });
     }
 
 
@@ -409,9 +413,9 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
                 }
                 break;
             case 'rotate':
+                const rotationIndex = currentPiece.rotationIndex || 0;
                 const rotatedShape = rotateShape(currentPiece.shape);
                 const kicks = WALL_KICKS[currentPiece.type] || WALL_KICKS.default;
-                const rotationIndex = currentPiece.rotationIndex || 0;
                 
                 for (const [x, y] of kicks[rotationIndex]) {
                     if (isValidMove(pieceX + x, pieceY + y, rotatedShape)) {
@@ -426,19 +430,19 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
                 }
                 break;
             case 'drop': // Hard drop
-                 let testY = pieceY;
-                 while (isValidMove(pieceX, testY + 1, currentPiece.shape)) {
-                     testY++;
-                 }
-                 if (testY > pieceY) {
-                     // TODO: Punti per hard drop?
-                     pieceY = testY;
+                 const shadowY = calculateShadow();
+                 if (shadowY > pieceY) {
+                     // Assegna punti bonus per hard drop (1 punto per ogni riga di caduta)
+                     score += (shadowY - pieceY);
+                     ui.updateScore(score);
+                     
+                     // Posiziona il pezzo all'ombra
+                     pieceY = shadowY;
                      lockPiece();
                      clearLines();
                      spawnNewPiece();
-                      if (isGameOver) return;
+                     if (isGameOver) return;
                  }
-                 // moved = true; // Non serve ridisegnare subito, lo fa il loop
                  break;
              case 'pause':
                  togglePause();
@@ -447,7 +451,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
 
         // Ridisegna subito dopo un input valido (tranne hard drop che lo fa il loop)
         if (moved && action !== 'drop') {
-             ui.renderGame({ grid, currentPiece, pieceX, pieceY });
+             ui.renderGame({ grid, currentPiece, pieceX, pieceY, shadowY: calculateShadow() });
         }
     }
 
@@ -463,7 +467,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
              lastTime = null; // Resetta lastTime per evitare scatti dopo pausa
              animationFrameId = requestAnimationFrame(gameLoop); // Riavvia loop
          }
-        // TODO: Suono pausa/ripresa?
+        // Potenziale suono di pausa/ripresa sarà aggiunto quando saranno disponibili i file audio
     }
 
      function toggleSound() {
@@ -485,25 +489,16 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
      }
 
     function playAudio(sound) {
-        if (!sound || gameAudio.isMuted) return;
-        
-        try {
-            // Per Howl oggetti
-            if (typeof sound.play === 'function') {
-                // Se è un oggetto Howl
-                if (sound.state && typeof sound.state === 'function' && sound.state() === 'loaded') {
-                    sound.play();
-                } else {
-                    // Se il suono non è caricato o è un elemento audio normale
-                    if (sound.currentTime !== undefined) {
-                        sound.currentTime = 0; // Reset se è un elemento audio HTML
-                    }
-                    sound.play().catch(e => console.warn("Couldn't play sound:", e));
-                }
-            }
-        } catch (e) {
-            console.warn("Error playing sound:", e);
-        }
+    // Versione semplificata dato che stiamo usando oggetti audio silenziosi
+    if (!sound || gameAudio.isMuted) return;
+    
+    try {
+    if (typeof sound.play === 'function') {
+    sound.play();
+    }
+    } catch (e) {
+    console.warn("Error playing sound:", e);
+    }
     }
 
      function getCurrentScore() {
@@ -512,63 +507,27 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
 
 
     // --- Inizializzazione Audio (Esempio base) ---
-    // Inizializzazione Audio con Howler.js con handling di asset mancanti
+    // Inizializzazione Audio con handling di asset mancanti
     function loadAudio() {
-        try {
-            // Controlla se Howler è disponibile
-            if (typeof Howl === 'undefined') {
-                throw new Error('Howler library not loaded');
-            }
-            
-            // Helper per provare a caricare audio con fallback silenzioso
-            const tryLoadAudio = (src, options = {}) => {
-                try {
-                    const sound = new Howl({
-                        src: [src],
-                        volume: options.volume || 0.5,
-                        loop: options.loop || false,
-                        onloaderror: () => {
-                            console.warn(`Could not load audio: ${src}`);
-                        }
-                    });
-                    return sound;
-                } catch (e) {
-                    console.warn(`Error creating Howl for ${src}:`, e);
-                    // Ritorna un oggetto silent che implementa l'API minima
-                    return { 
-                        play: () => {}, 
-                        pause: () => {}, 
-                        stop: () => {}, 
-                        mute: () => {} 
-                    };
-                }
-            };
-            
-            // Musica di sottofondo
-            gameAudio.music = tryLoadAudio('assets/audio/korobeiniki.mp3', { loop: true });
-            
-            // Effetti sonori
-            gameAudio.move = tryLoadAudio('assets/audio/sfx/move.mp3');
-            gameAudio.rotate = tryLoadAudio('assets/audio/sfx/rotate.mp3');
-            gameAudio.land = tryLoadAudio('assets/audio/sfx/land.mp3');
-            gameAudio.line = tryLoadAudio('assets/audio/sfx/line.mp3');
-            gameAudio.tetris = tryLoadAudio('assets/audio/sfx/tetris.mp3', { volume: 0.6 });
-            gameAudio.gameover = tryLoadAudio('assets/audio/sfx/gameover.mp3', { volume: 0.6 });
-            gameAudio.level = tryLoadAudio('assets/audio/sfx/levelup.mp3', { volume: 0.6 });
-            
-            console.log("Audio system initialized (using Howler.js)");
-        } catch (e) {
-            console.error("Error setting up audio:", e);
-            // Fallback completo a oggetti silent
-            gameAudio.music = { play: () => {}, pause: () => {}, stop: () => {} };
-            gameAudio.move = { play: () => {} };
-            gameAudio.rotate = { play: () => {} };
-            gameAudio.land = { play: () => {} };
-            gameAudio.line = { play: () => {} };
-            gameAudio.tetris = { play: () => {} };
-            gameAudio.gameover = { play: () => {} };
-            gameAudio.level = { play: () => {} };
-        }
+    // Crea oggetti audio silenziosi che implementano l'API minima
+    const silentAudio = { 
+    play: () => {}, 
+    pause: () => {}, 
+    stop: () => {}, 
+    mute: () => {} 
+    };
+
+    // Musica di sfondo e effetti sonori
+    gameAudio.music = { ...silentAudio, loop: true };
+    gameAudio.move = silentAudio;
+    gameAudio.rotate = silentAudio;
+    gameAudio.land = silentAudio;
+    gameAudio.line = silentAudio;
+    gameAudio.tetris = silentAudio;
+    gameAudio.gameover = silentAudio;
+    gameAudio.level = silentAudio;
+    
+    // Implementare il sistema audio completo quando i file saranno disponibili
     }
     
     // Nota: La funzione playAudio è già definita sopra

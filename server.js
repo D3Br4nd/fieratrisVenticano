@@ -3,8 +3,7 @@ const path = require('path');
 const fs = require('fs').promises; // Usiamo la versione promise di fs
 const lockfile = require('proper-lockfile');
 const { parse } = require('csv-parse/sync'); // Per leggere CSV
-// Potresti usare csv-writer o semplicemente fs.appendFile per scrivere
-// const { createObjectCsvWriter } = require('csv-writer'); // Opzione per scrivere
+const cors = require('cors'); // Importa il modulo CORS
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,6 +36,7 @@ const SCORES_LOCK_PATH = path.join(__dirname, 'data', 'scores.csv.lock'); // Pat
 
 
 // Middleware
+app.use(cors()); // Abilita CORS per tutte le richieste
 app.use(express.json()); // Per parsare JSON body
 app.use(express.static(path.join(__dirname, 'public'))); // Serve file statici dalla cartella public
 
@@ -119,21 +119,49 @@ app.get('/api/scores', async (req, res) => {
             }
         }
 
-        const scores = data.split('\n')
-            .filter(line => line.trim() && !line.startsWith('NomeGiocatore')) // Skip header and empty lines
-            .map(line => {
-                const [name, score, date] = line.split(',');
-                return {
-                    name: name.replace(/"/g, ''),
-                    score: parseInt(score),
-                    date: date ? new Date(date) : new Date()
-                };
-            })
-            .sort((a, b) => b.score - a.score) // Ordine decrescente per punteggio
-            .slice(0, 100);
-        
-        console.log(`Inviando ${scores.length} punteggi ordinati.`);
-        res.json(scores.length ? scores : []);
+        // Usa il modulo csv-parse invece di fare lo split manuale
+        try {
+            // Parsa i dati CSV usando csv-parse/sync
+            const records = parse(data, {
+                columns: ['name', 'score', 'timestamp'],
+                skip_empty_lines: true,
+                skip_records_with_error: true,
+                from_line: 2 // Salta la riga di intestazione
+            });
+            
+            // Processa i record
+            const scores = records
+                .map(record => ({
+                    name: record.name.replace(/"/g, ''),
+                    score: parseInt(record.score, 10),
+                    date: record.timestamp ? new Date(record.timestamp) : new Date()
+                }))
+                .filter(record => !isNaN(record.score)) // Filtra record con score non validi
+                .sort((a, b) => b.score - a.score) // Ordine decrescente per punteggio
+                .slice(0, 100); // Limita a 100 risultati
+            
+            console.log(`Inviando ${scores.length} punteggi ordinati.`);
+            res.json(scores.length ? scores : []);
+        } catch (parseError) {
+            console.error('Error parsing CSV:', parseError);
+            // Fallback alla versione manuale se il parsing fallisce
+            const manualScores = data.split('\n')
+                .filter(line => line.trim() && !line.startsWith('NomeGiocatore'))
+                .map(line => {
+                    const [name, score, date] = line.split(',');
+                    return {
+                        name: name.replace(/"/g, ''),
+                        score: parseInt(score, 10),
+                        date: date ? new Date(date) : new Date()
+                    };
+                })
+                .filter(record => !isNaN(record.score))
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 100);
+                
+            console.log(`[FALLBACK] Inviando ${manualScores.length} punteggi ordinati.`);
+            res.json(manualScores.length ? manualScores : []);
+        }
     } catch (error) {
         console.error('Error reading scores:', error);
         res.status(500).json({ 
@@ -163,9 +191,3 @@ app.listen(PORT, () => {
     console.log(`Lock file path: ${SCORES_LOCK_PATH}`);
 });
 
-// Add proper CORS headers if needed (even for same origin)
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-});
