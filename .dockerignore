@@ -1,0 +1,27 @@
+# Directories
+node_modules
+npm-debug.log
+.git
+.github
+.vscode
+.idea
+**/.DS_Store
+
+# Files
+Dockerfile
+docker-compose.yml
+.gitignore
+.dockerignore
+README.md
+LICENSE
+*.md
+*.log
+
+# Environment and configuration files
+.env
+.env.*
+*.env
+
+# Data directory (verrà montato come volume)
+data/*
+!data/.gitkeep
