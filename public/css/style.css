@@ -17,6 +17,7 @@ body {
     justify-content: center;
     align-items: center;
     -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none; /* Previene il pull-to-refresh e altri comportamenti di scroll */
 }
 
 #game-area {
@@ -132,6 +133,7 @@ h1 {
     margin: 0 0 10px 0;
     width: 100%;
     max-width: 320px;
+    user-select: none; /* Previene la selezione del testo per il contenitore dei controlli */
 }
 
 #controls button {
@@ -147,6 +149,9 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none; /* Previene la selezione del testo */
+    touch-action: manipulation; /* Ottimizza per input touch */
+    -webkit-touch-callout: none; /* Disabilita il menu contestuale su iOS */
 }
 
 #controls button:active {

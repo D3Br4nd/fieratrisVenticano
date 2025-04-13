@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>FieraTris Venticano 2025</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -67,6 +69,33 @@
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/game.js"></script>
+    
+    <!-- Script per prevenire il doppio tocco e lo zoom -->
+    <script>
+        // Previeni il doppio tocco che attiva lo zoom su dispositivi mobili
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Previeni il pinch zoom
+        document.addEventListener('touchmove', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Un last-resort per prevenire il doppio tocco
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Passa le referenze necessarie a UI e Game

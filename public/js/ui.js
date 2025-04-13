@@ -295,10 +295,32 @@ const setupUI = (elements) => {
             }
         });
     
-        // Listener Bottoni Touch standard
-        document.getElementById('btn-left')?.addEventListener('click', () => handleInputCallback && !isPaused && handleInputCallback('left'));
-        document.getElementById('btn-right')?.addEventListener('click', () => handleInputCallback && !isPaused && handleInputCallback('right'));
-        document.getElementById('btn-rotate')?.addEventListener('click', () => handleInputCallback && !isPaused && handleInputCallback('rotate'));
+        // Migliorata gestione degli eventi touch per i pulsanti
+        const setupButtonEvents = (btnId, action) => {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                // Evita doppi eventi touch/click
+                const handleAction = (e) => {
+                    e.preventDefault();
+                    if (handleInputCallback && !isPaused) {
+                        handleInputCallback(action);
+                    }
+                    return false;
+                };
+                
+                // Usa touchstart invece di click per più reattività
+                btn.addEventListener('touchstart', handleAction, { passive: false });
+                // Mantieni il click per supporto del mouse
+                btn.addEventListener('click', handleAction);
+                // Previeni esplicitamente il menu contestuale
+                btn.addEventListener('contextmenu', (e) => e.preventDefault());
+            }
+        };
+        
+        // Configura i pulsanti standard
+        setupButtonEvents('btn-left', 'left');
+        setupButtonEvents('btn-right', 'right');
+        setupButtonEvents('btn-rotate', 'rotate');
         
         // Gestione speciale per il pulsante giù con pressione continua
         const downButton = document.getElementById('btn-down');
@@ -319,9 +341,10 @@ const setupUI = (elements) => {
                 }
             });
             
-            // Per dispositivi touch
+            // Per dispositivi touch - migliorato per prevenire zoom e menu contestuali
             downButton.addEventListener('touchstart', (e) => {
                 e.preventDefault(); // Previene comportamenti indesiderati su mobile
+                e.stopPropagation();
                 if (handleInputCallback && !isPaused) {
                     // Prima chiamata immediata
                     handleInputCallback('down');
@@ -334,7 +357,11 @@ const setupUI = (elements) => {
                         }
                     }, initialDownDelay);
                 }
-            });
+                return false;
+            }, { passive: false });
+            
+            // Previeni esplicitamente il menu contestuale
+            downButton.addEventListener('contextmenu', (e) => e.preventDefault());
             
             // Quando si rilascia il pulsante (mouse)
             downButton.addEventListener('mouseup', () => {
