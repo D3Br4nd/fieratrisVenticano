@@ -48,7 +48,6 @@
         </div>
     </div>
 
-    <!-- Update the game over screen div -->
     <div id="game-over-screen">
         <h2>Game Over!</h2>
         <p>Punteggio Finale: <span id="final-score">0</span></p>
@@ -64,13 +63,11 @@
         <button id="play-again-button" aria-label="Inizia una nuova partita">Gioca Ancora</button>
     </div>
 
-    <!-- Librerie esterne e script del gioco -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/game.js"></script>
     <script>
-        // Entry point - Avvia il gioco quando tutto è caricato
         document.addEventListener('DOMContentLoaded', () => {
             // Passa le referenze necessarie a UI e Game
             const canvas = document.getElementById('tetris-canvas');

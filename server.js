@@ -48,7 +48,7 @@ app.post('/api/score', async (req, res) => {
     if (!name || typeof name !== 'string' || name.trim().length === 0 || typeof score !== 'number' || score < 0) {
         return res.status(400).json({ 
             success: false,
-            message: 'Nome o punteggio non validi.' // In italiano
+            message: 'Nome o punteggio non validi.'
         });
     }
 
@@ -73,7 +73,6 @@ app.post('/api/score', async (req, res) => {
 
         // Rilascia il lock PRIMA di inviare la risposta
         await release();
-        release = null; // Azzera per sicurezza
 
         res.status(201).json({ 
             success: true,
@@ -93,7 +92,7 @@ app.post('/api/score', async (req, res) => {
         }
         res.status(500).json({ 
             success: false,
-            message: 'Failed to save score.' // In inglese
+            message: 'Failed to save score.'
         });
     }
 });

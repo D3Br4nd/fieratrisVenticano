@@ -17,8 +17,8 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
     };
     const PIECES = Object.keys(TETROMINOES);
 
-    // Colori per i blocchi FCV (da definire)
-    const FCV_COLOR = 'gold'; // Esempio
+    // Colori per i blocchi FCV
+    const FCV_COLOR = 'gold';
     const FCV_BONUS = 100; // Punti bonus per blocco FCV in linea
 
     // Punteggi
@@ -84,7 +84,7 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
         gameover: null,
         level: null,
         isMuted: false
-        // Gli elementi audio saranno implementati quando saranno disponibili
+        // Sono implementati solo i file audio disponibili
     };
 
 
@@ -347,8 +347,10 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
 
         // Avvia musica di sottofondo (in loop)
         if (gameAudio.music && !gameAudio.isMuted) {
-             gameAudio.music.loop = true;
-             gameAudio.music.play();
+        gameAudio.music.loop = true;
+        gameAudio.music.play().catch(error => {
+               console.warn('Errore durante la riproduzione della musica:', error);
+             });
          }
 
         // Cancella eventuale loop precedente e avvia quello nuovo
@@ -452,28 +454,54 @@ const setupGame = (ui, api) => { // Riceve le dipendenze UI e API
     }
 
      function toggleSound() {
-        // Semplicemente aggiorna l'UI per ora
         gameAudio.isMuted = !gameAudio.isMuted;
         ui.updateSoundButton(!gameAudio.isMuted);
-        // In futuro gestirà l'audio quando saranno disponibili gli asset
+        
+        // Gestisce la musica di sottofondo
+        if (gameAudio.music) {
+            if (gameAudio.isMuted) {
+                gameAudio.music.pause();
+            } else if (!isPaused) {
+                gameAudio.music.play().catch(error => {
+                    console.warn('Errore durante la riproduzione della musica:', error);
+                });
+            }
+        }
      }
 
     function playAudio(sound) {
-    // Funzione segnaposto fino all'arrivo degli asset audio
-    // Quando gli asset saranno disponibili, questa implementerà la riproduzione
-    return;
-}
+        // Riproduce il suono se esiste e non siamo in mute
+        if (sound && !gameAudio.isMuted) {
+            // Assicuriamoci che il suono parta dall'inizio
+            sound.currentTime = 0;
+            sound.play().catch(error => {
+                console.warn('Errore durante la riproduzione audio:', error);
+            });
+        }
+    }
 
      function getCurrentScore() {
          return score;
      }
 
 
-    // Inizializzazione Audio semplificata fino all'arrivo degli asset
+    // Inizializzazione Audio con i file disponibili
     function loadAudio() {
-        // Per ora gameAudio è già inizializzato con valori null
-        // Il codice è pronto per quando gli asset audio saranno disponibili
-        // Non sovrascrivere gameAudio, è già stato dichiarato
+        try {
+            // Carica la musica di sottofondo
+            gameAudio.music = new Audio('assets/audio/music.wav');
+            gameAudio.music.loop = true;
+            gameAudio.music.volume = 0.7; // Volume appropriato
+            
+            // Prepara gli eventi di gestione errori
+            gameAudio.music.addEventListener('error', (e) => {
+                console.error('Errore nel caricamento della musica:', e);
+            });
+            
+            console.log('Audio di gioco caricato correttamente');
+        } catch (error) {
+            console.error('Errore nell\'inizializzazione dell\'audio:', error);
+        }
     }
     
     // Helper per ottenere il nome del tema in base al livello

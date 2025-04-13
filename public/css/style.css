@@ -43,7 +43,7 @@ h1 {
 #tetris-canvas {
     border: 2px solid #333;
     background-color: #f8f8f8;
-    height: 600px; /* Tornato alla dimensione originale */
+    height: 600px;
 }
 
 #ui-panel {
@@ -59,7 +59,7 @@ h1 {
 
 #logo {
     width: 100%;
-    max-width: 90px; /* Logo ancora più piccolo */
+    max-width: 90px;
     height: auto;
     margin-bottom: 5px;
 }
@@ -93,6 +93,15 @@ h1 {
 
 #game-buttons button:hover {
     background-color: #45a049;
+}
+
+/* Stili per i pulsanti audio */
+#sound-button.unmuted {
+    background-color: #4CAF50; /* Verde quando l'audio è attivo */
+}
+
+#sound-button.muted {
+    background-color: #f44336; /* Rosso quando l'audio è disattivato */
 }
 
 /* Banner della Fiera */
@@ -149,7 +158,7 @@ h1 {
 #promo-banner {
     width: 100%;
     max-width: 320px;
-    height: 400px; /* Aumentata per adattarsi all'immagine 320x400 */
+    height: 400px;
     margin: 0 0 0 0;
     background-color: #f0f0f0;
     border-radius: 8px;
@@ -238,7 +247,7 @@ h1 {
     }
     
     #controls button {
-        height: 50px; /* Pulsanti leggermente più piccoli su mobile */
+        height: 50px;
         font-size: 20px;
     }
     
@@ -266,12 +275,12 @@ h1 {
     }
     
     #controls button {
-        height: 45px; /* Pulsanti ancora più piccoli su dispositivi molto piccoli */
+        height: 45px;
         font-size: 18px;
     }
 }
 
-/* Game Over Screen - Sistemato */
+/* Game Over Screen */
 #game-over-screen {
     position: fixed;
     top: 0;

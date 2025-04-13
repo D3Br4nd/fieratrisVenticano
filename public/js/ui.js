@@ -22,6 +22,11 @@ const setupUI = (elements) => {
     let isSoundOn = true; // Stato iniziale audio
     let isPaused = false; // Stato iniziale pausa
     
+    // Inizializza lo stato del pulsante audio
+    if (soundButton) {
+        soundButton.classList.add('unmuted');
+    }
+    
     // Flag per tracciare lo stato del popup
     let isGameOverVisible = false;
     
@@ -123,7 +128,7 @@ const setupUI = (elements) => {
     
     function createLineClearParticles(lines) {
         const now = performance.now();
-        if (now - lastParticleTime < 100) return; // Limit particle creation rate
+        if (now - lastParticleTime < 100) return; // Limita frequenza particelle
         
         lastParticleTime = now;
         
@@ -429,9 +434,15 @@ const setupUI = (elements) => {
     function updateSoundButton(soundOn) {
         isSoundOn = soundOn;
         soundButton.textContent = soundOn ? 'Audio Off' : 'Audio On';
+        // Aggiorna lo stato visivo del pulsante
+        if (soundOn) {
+            soundButton.classList.remove('muted');
+            soundButton.classList.add('unmuted');
+        } else {
+            soundButton.classList.remove('unmuted');
+            soundButton.classList.add('muted');
+        }
     }
-
-    // Il logo è già caricato dall'HTML attraverso l'attributo src
 
     // Esponi le funzioni e le proprietà necessarie all'esterno
     return {
